@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #0d0d0d;
+  --background-soft: #141414;
+  --panel: #121212;
+  --panel-elevated: #171717;
+  --border: rgba(201, 168, 76, 0.22);
+  --border-strong: rgba(240, 208, 128, 0.38);
+  --gold: #c9a84c;
+  --gold-hover: #f0d080;
+  --cream: #f0e6c8;
+  --cream-soft: #a89060;
+  --brown: #6b5020;
+  --text: #f5f0e4;
+  --muted: rgba(240, 230, 200, 0.78);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  --radius-sm: 0.7rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.35rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M36 2v68M2 36h68' stroke='rgba(201,168,76,0.08)' stroke-width='1'/%3E%3Ccircle cx='36' cy='36' r='1.25' fill='rgba(201,168,76,0.16)'/%3E%3C/g%3E%3C/svg%3E") repeat,
+    var(--background);
+  color: var(--text);
+  font-family: var(--font-body), 'Libre Baskerville', Georgia, serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(201, 168, 76, 0.3);
+  color: var(--cream);
+}
+
+.premium-shell {
+  position: relative;
+}
+
+.premium-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(240, 208, 128, 0.06);
+  margin: 0.75rem;
+  border-radius: 1.5rem;
+  z-index: 0;
+}
+
+.premium-card {
+  background: linear-gradient(180deg, rgba(18, 18, 18, 0.98), rgba(12, 12, 12, 0.95));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+}
+
+.premium-card-quiet {
+  background: rgba(17, 17, 17, 0.82);
+  border: 1px solid rgba(201, 168, 76, 0.12);
+}
+
+.premium-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.32), transparent);
+}
+
+.premium-kicker {
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--cream-soft);
+  font-size: 0.72rem;
+}
+
+.premium-title {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  letter-spacing: 0.02em;
+}
+
+.premium-input,
+.premium-textarea {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.35) !important;
+  border-radius: 0 !important;
+  color: var(--cream) !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.premium-input::placeholder,
+.premium-textarea::placeholder {
+  color: rgba(240, 230, 200, 0.48) !important;
+}
+
+.premium-input:focus,
+.premium-textarea:focus {
+  border-bottom-color: var(--gold-hover) !important;
+}
+
+.premium-button-primary,
+.premium-button-secondary {
+  min-height: 2.85rem;
+  border-radius: 0.45rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.premium-button-primary {
+  background: var(--gold) !important;
+  color: #121212 !important;
+  border: 1px solid rgba(240, 208, 128, 0.44) !important;
+}
+
+.premium-button-primary:hover {
+  background: var(--gold-hover) !important;
+}
+
+.premium-button-secondary {
+  background: transparent !important;
+  color: var(--cream) !important;
+  border: 1px solid rgba(201, 168, 76, 0.42) !important;
+}
+
+.premium-button-secondary:hover {
+  border-color: rgba(240, 208, 128, 0.72) !important;
+  color: var(--gold-hover) !important;
+}
+
+.premium-chip {
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--cream);
+}
+
+.premium-nav {
+  background: rgba(12, 12, 12, 0.92);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.premium-footer {
+  background: #0b0b0b;
+  border-top: 1px solid rgba(201, 168, 76, 0.18);
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--gold-hover);
+  outline-offset: 3px;
+}

@@ -239,6 +239,7 @@ export async function updateProduct(payload: ProductSchema, token?: string) {
   return requestJson<ProductSchema>('/productos/update-product', {
     method: 'PUT',
     body: payload,
+    token,
   });
 }
 

@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import {Button, Card, CardBody} from '@heroui/react';
+import type {ReactNode} from 'react';
 import {useAdminSession} from '@/features/admin/auth/use-admin-session';
 
 type AdminRouteShellProps = {
   title: string;
   description: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export function AdminRouteShell({title, description, children}: AdminRouteShellProps) {
@@ -19,62 +19,58 @@ export function AdminRouteShell({title, description, children}: AdminRouteShellP
 
   if (!token) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <Card className="premium-card w-full max-w-2xl border border-[rgba(201,168,76,0.18)] bg-transparent">
-          <CardBody className="gap-4 p-6 md:p-8">
-            <p className="premium-kicker">Sesión requerida</p>
-            <h1 className="premium-title text-3xl text-(--cream) md:text-4xl">Debes iniciar sesión para administrar</h1>
-            <p className="text-sm leading-7 text-(--muted)">Vuelve al login principal y accede de nuevo.</p>
-            <Button as={Link} href="/" className="premium-button-primary w-fit" radius="sm">
-              Ir al login
-            </Button>
-          </CardBody>
-        </Card>
+      <main className="cs-container flex min-h-screen items-center justify-center py-10">
+        <section className="cs-panel cs-panel-strong w-full max-w-2xl p-6 md:p-8">
+          <p className="cs-kicker">Sesión requerida</p>
+          <h1 className="cs-h2 mt-3">Debes iniciar sesión para administrar</h1>
+          <p className="mt-3 text-sm leading-7 text-cs-cream-muted">Vuelve al login principal y accede de nuevo.</p>
+          <Link href="/" className="btn-primary mt-6 w-fit">
+            Ir al login
+          </Link>
+        </section>
       </main>
     );
   }
 
   return (
-    <main className="relative z-10">
-      <header className="premium-nav sticky top-0 z-30">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+    <main className="relative z-10 pb-10">
+      <header className="sticky top-0 z-30 border-b border-[rgba(201,168,76,0.14)] bg-[rgba(13,13,13,0.9)] backdrop-blur-md">
+        <div className="cs-container flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="space-y-1">
-            <p className="premium-kicker">Casa Stella</p>
-            <h1 className="premium-title text-2xl text-(--cream)">{title}</h1>
+            <p className="cs-kicker">Casa Stella</p>
+            <h1 className="cs-h3 text-2xl">{title}</h1>
           </div>
 
-          <nav aria-label="Secciones del panel" className="flex flex-wrap gap-2 text-xs tracking-[0.22em] uppercase text-(--cream-soft)">
-            <Link className="focus-ring rounded-full border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-(--cream)" href="/admin">
+          <nav aria-label="Secciones del panel" className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.22em] text-cs-cream-muted">
+            <Link className="border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-cs-cream" href="/admin">
               Resumen
             </Link>
-            <Link className="focus-ring rounded-full border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-(--cream)" href="/admin/horario">
+            <Link className="border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-cs-cream" href="/admin/horario">
               Horario
             </Link>
-            <Link className="focus-ring rounded-full border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-(--cream)" href="/admin/categorias">
+            <Link className="border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-cs-cream" href="/admin/categorias">
               Categorías
             </Link>
-            <Link className="focus-ring rounded-full border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-(--cream)" href="/admin/productos">
+            <Link className="border border-[rgba(201,168,76,0.16)] px-3 py-2 transition hover:border-[rgba(240,208,128,0.6)] hover:text-cs-cream" href="/admin/productos">
               Productos
             </Link>
           </nav>
 
-          <Button className="premium-button-secondary" radius="sm" variant="bordered" onPress={logout}>
+          <button className="btn-secondary" type="button" onClick={logout}>
             Cerrar sesión
-          </Button>
+          </button>
         </div>
       </header>
 
-      <section className="mx-auto max-w-7xl px-4 pb-2 pt-8 sm:px-6 lg:px-8 lg:pt-10">
-        <Card className="premium-card border border-[rgba(201,168,76,0.18)] bg-transparent">
-          <CardBody className="gap-4 p-6 md:p-8">
-            <p className="premium-kicker">Edición</p>
-            <h2 className="premium-title text-3xl text-(--cream) md:text-4xl">{title}</h2>
-            <p className="max-w-3xl text-sm leading-7 text-(--muted) md:text-base">{description}</p>
-          </CardBody>
-        </Card>
+      <section className="cs-container pb-2 pt-8 lg:pt-10">
+        <div className="cs-panel cs-panel-strong cs-hero-glow p-6 md:p-8">
+          <p className="cs-kicker">Edición</p>
+          <h2 className="cs-h2 mt-3">{title}</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-cs-cream-muted md:text-base">{description}</p>
+        </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">{children}</section>
+      <section className="cs-container py-4">{children}</section>
     </main>
   );
 }

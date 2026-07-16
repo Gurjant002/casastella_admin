@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${displayFont.variable} ${bodyFont.variable} premium-shell min-h-screen antialiased`}>
+      <body className={`${displayFont.variable} ${bodyFont.variable} min-h-screen antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

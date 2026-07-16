@@ -1,17 +1,8 @@
-import {ProductosClient} from '@/app/admin/productos/productos-client';
-import {getCategories, getOpeningHours, getProducts} from '@/lib/api';
+import {getAdminWorkspaceData} from '@/features/admin/server/admin-data';
+import {AdminProductosView} from '@/features/admin/ui/admin-productos-view';
 
 export default async function AdminProductosPage() {
-  const [categoriesResult, productsResult] = await Promise.allSettled([
-    getCategories({lang: 'es', available: true}),
-    getProducts({lang: 'es', available: true}),
-  ]);
-  const openingHoursResult = await getOpeningHours().catch(() => []);
+  const {categories, products, openingHours} = await getAdminWorkspaceData();
 
-  const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : [];
-  const products = productsResult.status === 'fulfilled' ? productsResult.value : [];
-
-  return (
-    <ProductosClient categories={categories} products={products} openingHours={openingHoursResult} />
-  );
+  return <AdminProductosView categories={categories} products={products} openingHours={openingHours} />;
 }

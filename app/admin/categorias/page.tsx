@@ -1,17 +1,8 @@
-import {CategoriasClient} from '@/app/admin/categorias/categorias-client';
-import {getCategories, getOpeningHours, getProducts} from '@/lib/api';
+import {getAdminWorkspaceData} from '@/features/admin/server/admin-data';
+import {AdminCategoriasView} from '@/features/admin/ui/admin-categorias-view';
 
 export default async function AdminCategoriasPage() {
-  const [categoriesResult, productsResult] = await Promise.allSettled([
-    getCategories({lang: 'es', available: true}),
-    getProducts({lang: 'es', available: true}),
-  ]);
-  const openingHoursResult = await getOpeningHours().catch(() => []);
+  const {categories, products, openingHours} = await getAdminWorkspaceData();
 
-  const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : [];
-  const products = productsResult.status === 'fulfilled' ? productsResult.value : [];
-
-  return (
-    <CategoriasClient categories={categories} products={products} openingHours={openingHoursResult} />
-  );
+  return <AdminCategoriasView categories={categories} products={products} openingHours={openingHours} />;
 }

@@ -1,12 +1,12 @@
 'use client';
 
 import {useEffect, useMemo, useState} from 'react';
-import {Button, Card, CardBody, Select, SelectItem, Input, Textarea} from '@heroui/react';
 import {createCategory, updateCategory, type CategoryModel, type OpeningHoursSchema, type ProductSchema} from '@/lib/api';
 import {useAdminSession} from '@/features/admin/auth/use-admin-session';
 import {AdminRouteShell} from '@/features/admin/ui/admin-route-shell';
+import {AdminMetricsStrip} from '@/features/admin/ui/admin-metrics-strip';
 
-type CategoriasClientProps = {
+type AdminCategoriasViewProps = {
   categories: CategoryModel[];
   products: ProductSchema[];
   openingHours: OpeningHoursSchema[];
@@ -16,7 +16,7 @@ function firstCategoryId(categories: CategoryModel[]) {
   return String(categories.find((category) => typeof category.id === 'number')?.id ?? '');
 }
 
-export function CategoriasClient({categories, products, openingHours}: CategoriasClientProps) {
+export function AdminCategoriasView({categories, products, openingHours}: AdminCategoriasViewProps) {
   const {token} = useAdminSession();
   const [message, setMessage] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(firstCategoryId(categories));
@@ -92,32 +92,43 @@ export function CategoriasClient({categories, products, openingHours}: Categoria
 
   return (
     <AdminRouteShell title="Edición de categorías" description="Lógica de categorías aislada en esta ruta.">
-      <Card className="premium-card border border-[rgba(201,168,76,0.18)] bg-transparent">
-        <CardBody className="gap-5 p-6 md:p-8">
-          <div className="flex gap-3">
-            <span className="premium-kicker">{categories.length} categorías</span>
-            <span className="premium-kicker">{products.length} productos</span>
-            <span className="premium-kicker">{openingHours.length} horarios</span>
-          </div>
-          <Select label="Categoría actual" labelPlacement="outside" selectedKeys={selectedCategoryId ? [selectedCategoryId] : []} onSelectionChange={(keys) => setSelectedCategoryId(String(Array.from(keys)[0] ?? ''))} classNames={{trigger: 'premium-input', label: 'text-[var(--cream-soft)]'}}>
+      <section className="cs-panel cs-panel-strong p-6 md:p-8">
+        <AdminMetricsStrip categories={categories.length} products={products.length} openingHours={openingHours.length} />
+        <div className="mt-6">
+          <label className="floating-label" htmlFor="selected-category">Categoría actual</label>
+          <select id="selected-category" className="input-luxury" value={selectedCategoryId} onChange={(event) => setSelectedCategoryId(event.target.value)}>
+            <option value="" className="bg-(--color-black) text-cs-cream">Selecciona una categoría</option>
             {categories.map((category) => (
-              <SelectItem key={String(category.id ?? category.common_name)}>{category.common_name}</SelectItem>
+              <option key={String(category.id ?? category.common_name)} value={String(category.id ?? '')} className="bg-(--color-black) text-cs-cream">
+                {category.common_name}
+              </option>
             ))}
-          </Select>
-          <Input label="Nombre interno" labelPlacement="outside" value={categoryForm.name} onValueChange={(value) => setCategoryForm((current) => ({...current, name: value}))} classNames={{inputWrapper: 'premium-input', label: 'text-[var(--cream-soft)]'}} />
-          <Input label="Nombre común" labelPlacement="outside" value={categoryForm.common_name} onValueChange={(value) => setCategoryForm((current) => ({...current, common_name: value}))} classNames={{inputWrapper: 'premium-input', label: 'text-[var(--cream-soft)]'}} />
-          <Textarea label="Descripción" labelPlacement="outside" value={categoryForm.description} onValueChange={(value) => setCategoryForm((current) => ({...current, description: value}))} minRows={3} classNames={{inputWrapper: 'premium-input', label: 'text-[var(--cream-soft)]', input: 'premium-textarea'}} />
-          <div className="flex flex-wrap gap-3">
-            <Button className="premium-button-primary" radius="sm" onPress={() => void handleCreateCategory()}>
-              Crear categoría
-            </Button>
-            <Button className="premium-button-secondary" radius="sm" variant="bordered" onPress={() => void handleUpdateCategory()}>
-              Actualizar categoría
-            </Button>
+          </select>
+        </div>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="floating-label" htmlFor="category-name">Nombre interno</label>
+            <input id="category-name" className="input-luxury" value={categoryForm.name} onChange={(event) => setCategoryForm((current) => ({...current, name: event.target.value}))} />
           </div>
-          {message ? <p className="text-sm leading-6 text-(--gold-hover)">{message}</p> : null}
-        </CardBody>
-      </Card>
+          <div>
+            <label className="floating-label" htmlFor="category-common-name">Nombre común</label>
+            <input id="category-common-name" className="input-luxury" value={categoryForm.common_name} onChange={(event) => setCategoryForm((current) => ({...current, common_name: event.target.value}))} />
+          </div>
+        </div>
+        <div className="mt-4">
+          <label className="floating-label" htmlFor="category-description">Descripción</label>
+          <textarea id="category-description" className="input-luxury min-h-32 resize-y pt-4" value={categoryForm.description} onChange={(event) => setCategoryForm((current) => ({...current, description: event.target.value}))} />
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button className="btn-primary" type="button" onClick={() => void handleCreateCategory()}>
+            Crear categoría
+          </button>
+          <button className="btn-secondary" type="button" onClick={() => void handleUpdateCategory()}>
+            Actualizar categoría
+          </button>
+        </div>
+        {message ? <p className="mt-4 text-sm leading-6 text-cs-gold">{message}</p> : null}
+      </section>
     </AdminRouteShell>
   );
 }

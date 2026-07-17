@@ -1,0 +1,209 @@
+import { API_BASE_URL, ApiError, TokenResponse, LoginRequest } from './api';
+
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+interface RequestOptions {
+  method?: HttpMethod;
+  query?: Record<string, string | number | boolean | null | undefined>;
+  body?: unknown;
+  token?: string;
+}
+
+async function request<T>(
+  path: string,
+  options: RequestOptions = {}
+): Promise<T> {
+  const { method = 'GET', query, body, token } = options;
+
+  const url = new URL(`${API_BASE_URL}${path}`);
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        url.searchParams.append(key, String(value));
+      }
+    });
+  }
+
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url.toString(), {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new ApiError(`HTTP ${response.status}`, response.status, payload);
+  }
+
+  return response.json();
+}
+
+// Auth endpoints
+export async function loginAdmin(
+  username: string,
+  password: string
+): Promise<TokenResponse> {
+  return request('/api/v1/auth/login', {
+    method: 'POST',
+    body: { username, password },
+  });
+}
+
+// Product endpoints
+export interface ProductSchema {
+  id?: number | null;
+  number: number;
+  name: string;
+  description?: string | null;
+  price: number;
+  language?: string;
+  available?: boolean;
+  is_spicy?: boolean;
+  is_adult_only?: boolean;
+  category_id: number;
+  category?: CategoryModel | null;
+  ingredients?: IngredientSchema[] | null;
+}
+
+export interface ProductCreateSchema {
+  number: number;
+  name: string;
+  description?: string | null;
+  price: number;
+  language?: string;
+  available?: boolean;
+  is_spicy?: boolean;
+  is_adult_only?: boolean;
+  category_id: number;
+  ingredient_ids?: number[] | null;
+}
+
+export interface CategoryModel {
+  id?: number | null;
+  name: string;
+  common_name: string;
+  language?: string;
+  description?: string | null;
+  available?: boolean;
+  parent_id?: number | null;
+}
+
+export interface IngredientSchema {
+  id?: number | null;
+  name: string;
+  common_name?: string;
+  description?: string | null;
+  allergen_id?: number | null;
+}
+
+export async function getProducts(
+  token: string,
+  filters?: {
+    by_id?: number;
+    by_number?: number;
+    lang?: string;
+    category_id?: number;
+    available?: boolean;
+  }
+): Promise<ProductSchema[]> {
+  return request('/productos/get-products', {
+    method: 'POST',
+    query: filters,
+    token,
+  });
+}
+
+export async function createProduct(
+  token: string,
+  data: ProductCreateSchema
+): Promise<ProductSchema> {
+  return request('/productos/create-product', {
+    method: 'POST',
+    body: data,
+    token,
+  });
+}
+
+export async function updateProduct(
+  token: string,
+  data: ProductSchema
+): Promise<ProductSchema> {
+  return request('/productos/update-product', {
+    method: 'PUT',
+    body: data,
+    token,
+  });
+}
+
+// Category endpoints
+export async function getCategories(
+  token: string,
+  filters?: {
+    lang?: string;
+    id?: number;
+    common_name?: string;
+    available?: boolean;
+  }
+): Promise<CategoryModel[]> {
+  return request('/categorias/get-categories', {
+    method: 'POST',
+    query: filters,
+    token,
+  });
+}
+
+export async function createCategory(
+  token: string,
+  data: Omit<CategoryModel, 'id'>
+): Promise<CategoryModel> {
+  return request('/categorias/create-category', {
+    method: 'POST',
+    body: data,
+    token,
+  });
+}
+
+export async function updateCategory(
+  token: string,
+  categoryId: number,
+  data: Partial<CategoryModel>
+): Promise<CategoryModel> {
+  return request(`/categorias/update-category/${categoryId}`, {
+    method: 'PUT',
+    body: data,
+    token,
+  });
+}
+
+// Opening hours endpoints
+export interface OpeningHoursSchema {
+  day: string;
+  start_time: string;
+  end_time: string;
+}
+
+export async function getOpeningHours(token: string): Promise<OpeningHoursSchema[]> {
+  return request('/horarios/get-opening-hours', {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function setOpeningHours(
+  token: string,
+  hours: OpeningHoursSchema[]
+): Promise<{ message: string }> {
+  return request('/horarios/set-opening-hours', {
+    method: 'POST',
+    body: { hours },
+    token,
+  });
+}

@@ -32,6 +32,12 @@
 
 /* Layout */
 --max-width: 1320px;
+
+/* Admin theme extension */
+--admin-bg-dark: #0f0f0f;
+--admin-bg-card: #1a1a1a;
+--admin-bg-hover: #252525;
+--admin-border: rgba(var(--color-gold-rgb) / 0.15);
 }
 
 @theme inline {

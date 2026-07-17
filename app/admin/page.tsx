@@ -1,35 +1,61 @@
-import Link from 'next/link';
-import {AdminRouteShell} from '@/features/admin/ui/admin-route-shell';
+'use client';
 
-export default async function AdminHomePage() {
+import React from 'react';
+import { Card, CardBody, CardHeader } from '@heroui/react';
+import Link from 'next/link';
+
+export default function AdminDashboard() {
+  const modules = [
+    {
+      title: 'Gestión de Platos',
+      description: 'Crear, editar, eliminar y activar/desactivar platos del menú',
+      icon: '🍽️',
+      href: '/admin/platos',
+      color: 'from-orange-600 to-red-600',
+    },
+    {
+      title: 'Horarios',
+      description: 'Configurar horarios de atención del restaurante',
+      icon: '⏰',
+      href: '/admin/horarios',
+      color: 'from-blue-600 to-cyan-600',
+    },
+    {
+      title: 'Categorías',
+      description: 'Gestionar categorías de platos',
+      icon: '📋',
+      href: '/admin/categorias',
+      color: 'from-purple-600 to-pink-600',
+    },
+  ];
+
   return (
-    <AdminRouteShell title="Panel principal" description="Selecciona un apartado para administrar por página.">
-      <main className="grid gap-4 md:grid-cols-3">
-        <section className="cs-panel cs-panel-strong cs-panel-hover p-5">
-          <p className="cs-kicker">Ruta</p>
-          <p className="cs-h3 mt-3">Horario</p>
-          <p className="mt-2 text-sm leading-6 text-[var(--color-cream-muted)]">Actualiza los tramos de apertura y cierre por día.</p>
-          <Link href="/admin/horario" className="btn-primary mt-6 w-fit">
-            Ir a horario
+    <div className="p-8">
+      <div className="mb-8">
+        <h1 className="font-display text-5xl mb-2" style={{ color: 'var(--color-gold)' }}>Dashboard</h1>
+        <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>Administra tu carta digital de Casa Stella</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {modules.map((module) => (
+          <Link key={module.href} href={module.href}>
+            <Card className="h-full transition-all hover:shadow-lg border" style={{ 
+              backgroundColor: 'var(--admin-bg-card)', 
+              borderColor: 'var(--admin-border)',
+            }}>
+              <CardHeader className="flex gap-3">
+                <span className="text-4xl">{module.icon}</span>
+                <div className="flex flex-col">
+                  <p className="font-display text-xl" style={{ color: 'var(--color-gold)' }}>{module.title}</p>
+                </div>
+              </CardHeader>
+              <CardBody>
+                <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{module.description}</p>
+              </CardBody>
+            </Card>
           </Link>
-        </section>
-        <section className="cs-panel cs-panel-strong cs-panel-hover p-5">
-          <p className="cs-kicker">Ruta</p>
-          <p className="cs-h3 mt-3">Categorías</p>
-          <p className="mt-2 text-sm leading-6 text-[var(--color-cream-muted)]">Gestiona familias, descripciones y disponibilidad editorial.</p>
-          <Link href="/admin/categorias" className="btn-primary mt-6 w-fit">
-            Ir a categorías
-          </Link>
-        </section>
-        <section className="cs-panel cs-panel-strong cs-panel-hover p-5">
-          <p className="cs-kicker">Ruta</p>
-          <p className="cs-h3 mt-3">Productos</p>
-          <p className="mt-2 text-sm leading-6 text-[var(--color-cream-muted)]">Edita la carta con número, precio, atributos y categoría.</p>
-          <Link href="/admin/productos" className="btn-primary mt-6 w-fit">
-            Ir a productos
-          </Link>
-        </section>
-      </main>
-    </AdminRouteShell>
+        ))}
+      </div>
+    </div>
   );
 }

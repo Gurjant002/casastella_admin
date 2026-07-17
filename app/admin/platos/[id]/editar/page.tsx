@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, CardHeader, Button, Input, Select, SelectItem } from '@heroui/react';
-import { useRouter, useParams } from 'next/navigation';
+import { Card, CardBody } from '@heroui/react';
+import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import {
   getProducts,
@@ -11,6 +11,8 @@ import {
   ProductSchema,
   CategoryModel,
 } from '@/lib/api-client';
+import { FormInput, FormSelect, FormCheckbox } from '@/features/admin/ui/form-components';
+import { FormButton } from '@/features/admin/ui/button-components';
 
 export default function EditarPlatoPage() {
   const router = useRouter();
@@ -111,16 +113,16 @@ export default function EditarPlatoPage() {
   if (error && !plato) {
     return (
       <div className="p-8">
-        <Card className="border" style={{ backgroundColor: 'rgba(192, 57, 43, 0.1)', borderColor: 'var(--color-danger)' }}>
+        <Card className="border" style={{ backgroundColor: 'rgba(220, 38, 38, 0.1)', borderColor: 'var(--color-danger)' }}>
           <CardBody>
-            <p className="font-body" style={{ color: '#ff9999' }}>{error}</p>
-            <Button
-              onPress={() => router.back()}
-              className="mt-4 font-body"
-              style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-black)' }}
+            <p className="font-body font-semibold" style={{ color: '#ff9999' }}>⚠️ {error}</p>
+            <FormButton
+              onClick={() => router.back()}
+              variant="primary"
+              size="md"
             >
               Volver
-            </Button>
+            </FormButton>
           </CardBody>
         </Card>
       </div>
@@ -138,158 +140,113 @@ export default function EditarPlatoPage() {
         </p>
       </div>
 
-      <Card className="max-w-2xl border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-        <CardBody className="gap-6 p-8">
+      <Card className="max-w-3xl border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
+        <CardBody className="gap-8 p-8">
           {error && (
-            <div className="rounded-lg p-4 border" style={{ backgroundColor: 'rgba(192, 57, 43, 0.1)', borderColor: 'var(--color-danger)' }}>
-              <p className="font-body" style={{ color: '#ff9999' }}>{error}</p>
+            <div className="rounded-lg p-4 border-2" style={{ backgroundColor: 'rgba(220, 38, 38, 0.1)', borderColor: 'var(--color-danger)' }}>
+              <p className="font-body font-semibold" style={{ color: '#ff9999' }}>⚠️ {error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="gap-6 flex flex-col">
-            <div className="grid grid-cols-2 gap-6">
-              <Input
-                isRequired
-                label="Número"
-                type="number"
-                value={String(formData.number)}
-                onChange={(e) => setFormData({ ...formData, number: parseInt(e.target.value) || 0 })}
-                classNames={{
-                  input: 'font-body',
-                  label: 'font-body',
-                }}
-                style={{
-                  '--input-bg': 'var(--color-black)',
-                  '--input-text': 'var(--color-cream)',
-                  '--input-label': 'var(--color-cream-muted)',
-                } as React.CSSProperties}
-              />
-              <Input
-                isRequired
-                label="Precio"
-                type="number"
-                step="0.01"
-                value={String(formData.price)}
-                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                classNames={{
-                  input: 'font-body',
-                  label: 'font-body',
-                }}
-                style={{
-                  '--input-bg': 'var(--color-black)',
-                  '--input-text': 'var(--color-cream)',
-                  '--input-label': 'var(--color-cream-muted)',
-                } as React.CSSProperties}
-              />
-            </div>
-
-            <Input
-              isRequired
-              label="Nombre del plato"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              classNames={{
-                input: 'font-body',
-                label: 'font-body',
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
-            />
-
-            <Input
-              label="Descripción"
-              value={formData.description || ''}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              classNames={{
-                input: 'font-body',
-                label: 'font-body',
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
-            />
-
-            <Select
-              isRequired
-              label="Categoría"
-              selectedKeys={formData.category_id ? [String(formData.category_id)] : []}
-              onChange={(e) =>
-                setFormData({ ...formData, category_id: parseInt(e.target.value) || 0 })
-              }
-              classNames={{
-                trigger: 'font-body',
-                label: 'font-body',
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
-            >
-              {categories.map((cat) => (
-                <SelectItem key={cat.id}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </Select>
-
-            <div className="border-t" style={{ borderColor: 'var(--admin-border)' }}>
-              <p className="font-body font-semibold mt-6 mb-4" style={{ color: 'var(--color-cream)' }}>
-                Opciones adicionales
-              </p>
-              <div className="grid grid-cols-3 gap-6">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.available}
-                    onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
-                    className="w-5 h-5 cursor-pointer"
-                  />
-                  <span className="font-body" style={{ color: 'var(--color-cream-muted)' }}>Disponible</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_spicy}
-                    onChange={(e) => setFormData({ ...formData, is_spicy: e.target.checked })}
-                    className="w-5 h-5 cursor-pointer"
-                  />
-                  <span className="font-body" style={{ color: 'var(--color-cream-muted)' }}>🌶️ Picante</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_adult_only}
-                    onChange={(e) => setFormData({ ...formData, is_adult_only: e.target.checked })}
-                    className="w-5 h-5 cursor-pointer"
-                  />
-                  <span className="font-body" style={{ color: 'var(--color-cream-muted)' }}>👤 Solo adultos</span>
-                </label>
+          <form onSubmit={handleSubmit} className="gap-8 flex flex-col">
+            {/* Información básica */}
+            <div>
+              <h3 className="font-display text-lg mb-6" style={{ color: 'var(--color-gold)' }}>
+                Información básica
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <FormInput
+                  label="Número"
+                  isRequired
+                  type="number"
+                  value={String(formData.number)}
+                  onChange={(e) => setFormData({ ...formData, number: parseInt(e.target.value) || 0 })}
+                  placeholder="Ej: 1"
+                />
+                <FormInput
+                  label="Precio"
+                  isRequired
+                  type="number"
+                  step="0.01"
+                  value={String(formData.price)}
+                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                  placeholder="Ej: 12.50"
+                />
               </div>
             </div>
 
-            <div className="flex gap-4 justify-end border-t pt-6" style={{ borderColor: 'var(--admin-border)' }}>
-              <Button
-                onPress={() => router.back()}
-                className="font-body font-semibold"
-                style={{ backgroundColor: 'var(--admin-bg-hover)', color: 'var(--color-cream-muted)' }}
+            {/* Descripción */}
+            <div>
+              <FormInput
+                label="Nombre del plato"
+                isRequired
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Ej: Pasta Carbonara"
+              />
+            </div>
+
+            <div>
+              <FormInput
+                label="Descripción"
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Describe el plato, ingredientes principales, etc..."
+              />
+            </div>
+
+            {/* Categoría */}
+            <div>
+              <FormSelect
+                label="Categoría"
+                isRequired
+                value={String(formData.category_id)}
+                onChange={(e) => setFormData({ ...formData, category_id: parseInt(e.target.value) || 0 })}
+                options={categories}
+              />
+            </div>
+
+            {/* Opciones adicionales */}
+            <div className="border-t pt-8" style={{ borderColor: 'var(--admin-border)' }}>
+              <h3 className="font-display text-lg mb-6" style={{ color: 'var(--color-gold)' }}>
+                Opciones adicionales
+              </h3>
+              <div className="grid grid-cols-3 gap-3">
+                <FormCheckbox
+                  label="✓ Disponible"
+                  checked={formData.available}
+                  onChange={(checked) => setFormData({ ...formData, available: checked })}
+                />
+                <FormCheckbox
+                  label="🌶️ Picante"
+                  checked={formData.is_spicy}
+                  onChange={(checked) => setFormData({ ...formData, is_spicy: checked })}
+                />
+                <FormCheckbox
+                  label="👤 Solo adultos"
+                  checked={formData.is_adult_only}
+                  onChange={(checked) => setFormData({ ...formData, is_adult_only: checked })}
+                />
+              </div>
+            </div>
+
+            {/* Botones */}
+            <div className="flex gap-4 justify-end border-t pt-8" style={{ borderColor: 'var(--admin-border)' }}>
+              <FormButton 
+                onClick={() => router.back()} 
+                variant="secondary"
               >
                 Cancelar
-              </Button>
-              <Button
+              </FormButton>
+              <FormButton
                 type="submit"
+                variant="primary"
+                size="lg"
                 isLoading={isSaving}
-                disabled={isSaving}
-                className="font-body font-semibold uppercase tracking-wider text-black"
-                style={{ backgroundColor: 'var(--color-gold)' }}
+                disabled={isSaving || !formData.category_id}
               >
                 Guardar cambios
-              </Button>
+              </FormButton>
             </div>
           </form>
         </CardBody>

@@ -42,11 +42,18 @@ export default function PlatosPage() {
     if (!token) return;
     setIsLoading(true);
     try {
-      const [productsData, categoriesData] = await Promise.all([
-        getProducts(token),
+      const [availableData, unavailableData, categoriesData] = await Promise.all([
+        getProducts(token, { available: true }),
+        getProducts(token, { available: false }),
         getCategories(token),
       ]);
-      setProducts(productsData);
+      // Combinar disponibles y no disponibles, evitando duplicados por id
+      const allProducts = [...availableData];
+      for (const p of unavailableData) {
+        if (!allProducts.find((a) => a.id === p.id)) allProducts.push(p);
+      }
+      allProducts.sort((a, b) => (a.number ?? 0) - (b.number ?? 0));
+      setProducts(allProducts);
       setCategories(categoriesData);
     } catch (err) {
       setError('Error al cargar datos');

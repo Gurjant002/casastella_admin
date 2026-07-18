@@ -184,11 +184,13 @@ export default function CategoriasPage() {
           <ModalBody className="gap-4">
             <Input
               label="Nombre"
+              labelPlacement="outside"
+              placeholder="Nombre de la categoría"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               classNames={{
                 input: 'font-body',
-                label: 'font-body',
+                label: 'font-body font-semibold',
               }}
               style={{
                 '--input-bg': 'var(--color-black)',
@@ -198,11 +200,13 @@ export default function CategoriasPage() {
             />
             <Input
               label="Nombre común"
+              labelPlacement="outside"
+              placeholder="Identificador interno (ej: pasta_rellena)"
               value={formData.common_name}
               onChange={(e) => setFormData({ ...formData, common_name: e.target.value })}
               classNames={{
                 input: 'font-body',
-                label: 'font-body',
+                label: 'font-body font-semibold',
               }}
               style={{
                 '--input-bg': 'var(--color-black)',
@@ -212,12 +216,19 @@ export default function CategoriasPage() {
             />
             <Input
               label="Descripción"
+              labelPlacement="outside"
+              placeholder="Descripción opcional"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               classNames={{
-                input: 'bg-slate-800 text-white font-body',
-                label: 'text-slate-300 font-body',
+                input: 'font-body',
+                label: 'font-body font-semibold',
               }}
+              style={{
+                '--input-bg': 'var(--color-black)',
+                '--input-text': 'var(--color-cream)',
+                '--input-label': 'var(--color-cream-muted)',
+              } as React.CSSProperties}
             />
           </ModalBody>
           <ModalFooter>

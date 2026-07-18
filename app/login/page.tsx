@@ -2,9 +2,63 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Input, Card, CardBody, CardHeader } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader } from '@heroui/react';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import { loginAdmin } from '@/lib/api-client';
+
+function LoginInput({
+  label,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+  disabled,
+  endContent,
+}: {
+  label: string;
+  type?: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  endContent?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="font-body font-semibold text-sm" style={{ color: 'var(--color-cream-muted)' }}>
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          disabled={disabled}
+          autoComplete="off"
+          className="font-body w-full px-4 py-3 rounded-lg"
+          style={{
+            backgroundColor: 'var(--admin-bg-card)',
+            color: 'var(--color-cream)',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            borderColor: 'var(--admin-border)',
+            outline: 'none',
+            paddingRight: endContent ? '5rem' : '1rem',
+            opacity: disabled ? 0.6 : 1,
+          }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-gold)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(201,168,76,0.1)'; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--admin-border)'; e.currentTarget.style.boxShadow = 'none'; }}
+        />
+        {endContent && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            {endContent}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,31 +94,20 @@ export default function LoginPage() {
           <p className="font-body text-sm" style={{ color: 'var(--color-cream-muted)' }}>Panel de administración</p>
         </CardHeader>
         <CardBody className="gap-4 px-6 pb-8">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Input
-              isRequired
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <LoginInput
               label="Usuario"
-              placeholder="Ingresa tu usuario"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={setUsername}
+              placeholder="Ingresa tu usuario"
               disabled={isLoading}
-              classNames={{
-                input: ['font-body'],
-                label: ['font-body'],
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
             />
-            <Input
-              isRequired
+            <LoginInput
               label="Contraseña"
-              placeholder="Ingresa tu contraseña"
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
+              placeholder="Ingresa tu contraseña"
               disabled={isLoading}
               endContent={
                 <button
@@ -76,15 +119,6 @@ export default function LoginPage() {
                   {showPassword ? 'Ocultar' : 'Mostrar'}
                 </button>
               }
-              classNames={{
-                input: ['font-body'],
-                label: ['font-body'],
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
             />
             {error && (
               <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(192, 57, 43, 0.1)', borderColor: 'var(--color-danger)', border: '1px solid' }}>

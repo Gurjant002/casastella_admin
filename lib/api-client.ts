@@ -185,9 +185,13 @@ export async function updateCategory(
 
 // Opening hours endpoints
 export interface OpeningHoursSchema {
-  day: string;
-  start_time: string;
-  end_time: string;
+  id?: number | null;
+  day_of_week: string;
+  morning_open_time?: string | null;
+  morning_close_time?: string | null;
+  afternoon_open_time?: string | null;
+  afternoon_close_time?: string | null;
+  closed?: boolean;
 }
 
 export async function getOpeningHours(token: string): Promise<OpeningHoursSchema[]> {
@@ -199,11 +203,11 @@ export async function getOpeningHours(token: string): Promise<OpeningHoursSchema
 
 export async function setOpeningHours(
   token: string,
-  hours: OpeningHoursSchema[]
-): Promise<{ message: string }> {
+  hour: OpeningHoursSchema
+): Promise<OpeningHoursSchema> {
   return request('/horarios/set-opening-hours', {
     method: 'POST',
-    body: { hours },
+    body: hour,
     token,
   });
 }

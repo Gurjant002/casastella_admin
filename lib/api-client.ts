@@ -211,3 +211,15 @@ export async function setOpeningHours(
     token,
   });
 }
+
+// Auth - change password
+export async function changePassword(
+  token: string,
+  data: { current_password: string; new_password: string; confirm_password: string }
+): Promise<{ message: string }> {
+  return request('/api/v1/auth/change-password', {
+    method: 'PUT',
+    body: data,
+    token,
+  });
+}

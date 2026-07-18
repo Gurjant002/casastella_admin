@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@heroui/react';
 import { useAuth } from '../auth/auth-context';
@@ -27,16 +27,17 @@ const MENU_ITEMS = [
     icon: '⏰',
     href: '/admin/horarios',
   },
+  {
+    label: 'Contraseña',
+    icon: '🔑',
+    href: '/admin/contrasena',
+  },
 ];
 
 export default function AdminSidebar() {
   const router = useRouter();
+  const currentPath = usePathname();
   const { logout } = useAuth();
-  const [currentPath, setCurrentPath] = React.useState('');
-
-  React.useEffect(() => {
-    setCurrentPath(window.location.pathname);
-  }, []);
 
   const handleLogout = () => {
     logout();

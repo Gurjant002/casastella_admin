@@ -9,11 +9,30 @@ interface RequestOptions {
   token?: string;
 }
 
+function normalizeRequestBody(value: unknown): unknown {
+  if (typeof value === 'string') {
+    return value.replace(/\r\n/g, '\n');
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(normalizeRequestBody);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, normalizeRequestBody(entry)])
+    );
+  }
+
+  return value;
+}
+
 async function request<T>(
   path: string,
   options: RequestOptions = {}
 ): Promise<T> {
   const { method = 'GET', query, body, token } = options;
+  const normalizedBody = body ? normalizeRequestBody(body) : undefined;
 
   const url = new URL(`${API_BASE_URL}${path}`);
   if (query) {
@@ -35,7 +54,7 @@ async function request<T>(
   const response = await fetch(url.toString(), {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: normalizedBody ? JSON.stringify(normalizedBody) : undefined,
   });
 
   if (!response.ok) {

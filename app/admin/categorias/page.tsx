@@ -130,8 +130,8 @@ export default function CategoriasPage() {
                       {category.available === false ? 'Desactivada' : 'Activa'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-sm" style={{ color: 'var(--color-cream-muted)' }}>
-                    {category.description?.substring(0, 50) || '-'}
+                  <TableCell className="text-sm" style={{ color: 'var(--color-cream-muted)', whiteSpace: 'pre-line' }}>
+                    {category.description?.substring(0, 80) || '-'}
                   </TableCell>
                   <TableCell>
                     <Button

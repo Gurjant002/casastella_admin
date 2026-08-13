@@ -10,7 +10,7 @@ import {
   ProductCreateSchema,
   CategoryModel,
 } from '@/lib/api-client';
-import { FormInput, FormSelect, FormCheckbox } from '@/features/admin/ui/form-components';
+import { FormInput, FormSelect, FormCheckbox, FormTextarea } from '@/features/admin/ui/form-components';
 import { FormButton, FormButtonGroup } from '@/features/admin/ui/button-components';
 
 export default function NuevoPlatoPage() {
@@ -127,7 +127,7 @@ export default function NuevoPlatoPage() {
             </div>
 
             <div>
-              <FormInput
+              <FormTextarea
                 label="Descripción"
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}

@@ -11,7 +11,7 @@ import {
   ProductSchema,
   CategoryModel,
 } from '@/lib/api-client';
-import { FormInput, FormSelect, FormCheckbox } from '@/features/admin/ui/form-components';
+import { FormInput, FormSelect, FormCheckbox, FormTextarea } from '@/features/admin/ui/form-components';
 import { FormButton } from '@/features/admin/ui/button-components';
 
 export default function EditarPlatoPage() {
@@ -187,7 +187,7 @@ export default function EditarPlatoPage() {
             </div>
 
             <div>
-              <FormInput
+              <FormTextarea
                 label="Descripción"
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}

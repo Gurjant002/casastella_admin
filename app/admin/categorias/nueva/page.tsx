@@ -5,7 +5,7 @@ import { Card, CardBody } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import { createCategory, CategoryCreateSchema } from '@/lib/api-client';
-import { FormInput, FormCheckbox } from '@/features/admin/ui/form-components';
+import { FormInput, FormCheckbox, FormTextarea } from '@/features/admin/ui/form-components';
 import { FormButton } from '@/features/admin/ui/button-components';
 
 export default function NuevaCategoriaPage() {
@@ -83,7 +83,7 @@ export default function NuevaCategoriaPage() {
             </div>
 
             <div>
-              <FormInput
+              <FormTextarea
                 label="Descripción"
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}

@@ -51,6 +51,56 @@ export function FormInput({
   );
 }
 
+interface FormTextareaProps {
+  label: string;
+  isRequired?: boolean;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  placeholder?: string;
+  rows?: number;
+}
+
+export function FormTextarea({
+  label,
+  isRequired = false,
+  value,
+  onChange,
+  placeholder,
+  rows = 5,
+}: FormTextareaProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="font-body font-semibold" style={{ color: 'var(--color-cream)' }}>
+        {label}
+        {isRequired && <span style={{ color: 'var(--color-danger)' }}> *</span>}
+      </label>
+      <textarea
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        rows={rows}
+        className="font-body px-4 py-3 rounded-lg border-2 transition-all resize-y min-h-28"
+        style={{
+          backgroundColor: 'var(--color-black)',
+          color: 'var(--color-cream)',
+          borderColor: 'var(--admin-border)',
+          whiteSpace: 'pre-wrap',
+          lineHeight: '1.5',
+          overflowWrap: 'break-word',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = 'var(--color-gold)';
+          e.currentTarget.style.boxShadow = '0 0 0 3px rgba(201, 168, 76, 0.1)';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'var(--admin-border)';
+          e.currentTarget.style.boxShadow = 'none';
+        }}
+      />
+    </div>
+  );
+}
+
 interface FormSelectProps {
   label: string;
   isRequired?: boolean;

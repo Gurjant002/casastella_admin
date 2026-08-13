@@ -195,7 +195,9 @@ export default function PlatosPage() {
                     <div>
                       <p className="font-semibold" style={{ color: 'var(--color-cream)' }}>{product.name}</p>
                       {product.description && (
-                        <p className="text-xs" style={{ color: 'var(--color-cream-muted)' }}>{product.description.substring(0, 50)}...</p>
+                        <p className="text-xs" style={{ color: 'var(--color-cream-muted)', whiteSpace: 'pre-line' }}>
+                          {product.description.substring(0, 80)}...
+                        </p>
                       )}
                     </div>
                   </TableCell>

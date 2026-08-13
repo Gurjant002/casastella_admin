@@ -89,10 +89,10 @@ export default function HorariosPage() {
       setError('Selecciona al menos un día');
       return;
     }
-    if (!applyClosed && (!applyMorningOpen || !applyMorningClose)) {
+    /* if (!applyClosed && (!applyMorningOpen || !applyMorningClose)) {
       setError('Indica la hora de apertura y cierre de mañana (o marca como cerrado)');
       return;
-    }
+    } */
 
     setIsSaving(true);
     setError(null);

@@ -63,7 +63,7 @@ export type ProductSchema = {
 };
 
 export type ProductCreateSchema = {
-  number: number;
+  number?: number;
   name: string;
   description?: string | null;
   price: number;

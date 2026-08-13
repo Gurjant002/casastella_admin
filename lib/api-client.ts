@@ -74,7 +74,7 @@ export interface ProductSchema {
 }
 
 export interface ProductCreateSchema {
-  number: number;
+  number?: number;
   name: string;
   description?: string | null;
   price: number;
@@ -94,6 +94,14 @@ export interface CategoryModel {
   description?: string | null;
   available?: boolean;
   parent_id?: number | null;
+}
+
+export interface CategoryCreateSchema {
+  name: string;
+  common_name: string;
+  language?: string;
+  description?: string | null;
+  available?: boolean;
 }
 
 export interface IngredientSchema {
@@ -162,7 +170,7 @@ export async function getCategories(
 
 export async function createCategory(
   token: string,
-  data: Omit<CategoryModel, 'id'>
+  data: CategoryCreateSchema
 ): Promise<CategoryModel> {
   return request('/categorias/create-category', {
     method: 'POST',

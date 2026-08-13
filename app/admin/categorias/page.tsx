@@ -9,33 +9,19 @@ import {
   TableRow,
   TableCell,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Input,
   Card,
   CardBody,
 } from '@heroui/react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/admin/auth/auth-context';
-import { getCategories, createCategory, updateCategory, CategoryModel } from '@/lib/api-client';
+import { getCategories, CategoryModel } from '@/lib/api-client';
 
 export default function CategoriasPage() {
+  const router = useRouter();
   const { token } = useAuth();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [categories, setCategories] = useState<CategoryModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingCategory, setEditingCategory] = useState<CategoryModel | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const [formData, setFormData] = useState({
-    name: '',
-    common_name: '',
-    description: '',
-    language: 'es',
-  });
 
   useEffect(() => {
     loadData();
@@ -45,8 +31,20 @@ export default function CategoriasPage() {
     if (!token) return;
     setIsLoading(true);
     try {
-      const data = await getCategories(token);
-      setCategories(data);
+      const [activeCategories, inactiveCategories] = await Promise.all([
+        getCategories(token, { available: true }),
+        getCategories(token, { available: false }),
+      ]);
+
+      const allCategories = [...activeCategories];
+      for (const category of inactiveCategories) {
+        if (!allCategories.find((current) => current.id === category.id)) {
+          allCategories.push(category);
+        }
+      }
+
+      allCategories.sort((a, b) => a.name.localeCompare(b.name));
+      setCategories(allCategories);
     } catch (err) {
       setError('Error al cargar categorías');
       console.error(err);
@@ -55,49 +53,12 @@ export default function CategoriasPage() {
     }
   };
 
-  const handleOpenModal = (category?: CategoryModel) => {
-    if (category) {
-      setEditingCategory(category);
-      setFormData({
-        name: category.name,
-        common_name: category.common_name,
-        description: category.description || '',
-        language: category.language || 'es',
-      });
-    } else {
-      setEditingCategory(null);
-      setFormData({
-        name: '',
-        common_name: '',
-        description: '',
-        language: 'es',
-      });
-    }
-    onOpen();
-  };
-
-  const handleSubmit = async () => {
-    if (!token || !formData.name || !formData.common_name) {
-      setError('Completa todos los campos requeridos');
+  const handleOpenCategory = (category?: CategoryModel) => {
+    if (category?.id) {
+      router.push(`/admin/categorias/${category.id}/editar`);
       return;
     }
-
-    try {
-      if (editingCategory) {
-        const updated = await updateCategory(token, editingCategory.id!, {
-          ...formData,
-          available: editingCategory.available,
-        });
-        setCategories(categories.map((c) => (c.id === updated.id ? updated : c)));
-      } else {
-        const created = await createCategory(token, formData);
-        setCategories([...categories, created]);
-      }
-      onOpenChange();
-    } catch (err) {
-      setError('Error al guardar categoría');
-      console.error(err);
-    }
+    router.push('/admin/categorias/nueva');
   };
 
   return (
@@ -108,7 +69,7 @@ export default function CategoriasPage() {
           <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>Gestiona las categorías del menú</p>
         </div>
         <Button
-          onPress={() => handleOpenModal()}
+          onPress={() => handleOpenCategory()}
           className="font-body font-semibold uppercase tracking-wider text-black"
           style={{ backgroundColor: 'var(--color-gold)' }}
         >
@@ -142,6 +103,7 @@ export default function CategoriasPage() {
             <TableHeader>
               <TableColumn>Nombre</TableColumn>
               <TableColumn>Nombre común</TableColumn>
+              <TableColumn>Estado</TableColumn>
               <TableColumn>Descripción</TableColumn>
               <TableColumn>Acciones</TableColumn>
             </TableHeader>
@@ -156,6 +118,18 @@ export default function CategoriasPage() {
                 <TableRow key={category.id}>
                   <TableCell className="font-semibold" style={{ color: 'var(--color-cream)' }}>{category.name}</TableCell>
                   <TableCell style={{ color: 'var(--color-cream-muted)' }}>{category.common_name}</TableCell>
+                  <TableCell>
+                    <span
+                      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+                      style={{
+                        backgroundColor: category.available === false ? 'rgba(220, 38, 38, 0.15)' : 'rgba(34, 197, 94, 0.12)',
+                        color: category.available === false ? '#ff9999' : '#86efac',
+                        border: `1px solid ${category.available === false ? 'rgba(220, 38, 38, 0.3)' : 'rgba(34, 197, 94, 0.3)'}`,
+                      }}
+                    >
+                      {category.available === false ? 'Desactivada' : 'Activa'}
+                    </span>
+                  </TableCell>
                   <TableCell className="text-sm" style={{ color: 'var(--color-cream-muted)' }}>
                     {category.description?.substring(0, 50) || '-'}
                   </TableCell>
@@ -164,7 +138,7 @@ export default function CategoriasPage() {
                       isIconOnly
                       size="sm"
                       style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-black)' }}
-                      onPress={() => handleOpenModal(category)}
+                      onPress={() => handleOpenCategory(category)}
                     >
                       ✏️
                     </Button>
@@ -175,75 +149,6 @@ export default function CategoriasPage() {
           </Table>
         </Card>
       )}
-
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
-        <ModalContent style={{ backgroundColor: 'var(--admin-bg-card)' }}>
-          <ModalHeader className="font-display text-2xl" style={{ color: 'var(--color-gold)' }}>
-            {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
-          </ModalHeader>
-          <ModalBody className="gap-4">
-            <Input
-              label="Nombre"
-              labelPlacement="outside"
-              placeholder="Nombre de la categoría"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              classNames={{
-                input: 'font-body',
-                label: 'font-body font-semibold',
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
-            />
-            <Input
-              label="Nombre común"
-              labelPlacement="outside"
-              placeholder="Identificador interno (ej: pasta_rellena)"
-              value={formData.common_name}
-              onChange={(e) => setFormData({ ...formData, common_name: e.target.value })}
-              classNames={{
-                input: 'font-body',
-                label: 'font-body font-semibold',
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
-            />
-            <Input
-              label="Descripción"
-              labelPlacement="outside"
-              placeholder="Descripción opcional"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              classNames={{
-                input: 'font-body',
-                label: 'font-body font-semibold',
-              }}
-              style={{
-                '--input-bg': 'var(--color-black)',
-                '--input-text': 'var(--color-cream)',
-                '--input-label': 'var(--color-cream-muted)',
-              } as React.CSSProperties}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button color="default" onPress={() => onOpenChange()} className="font-body">
-              Cancelar
-            </Button>
-            <Button
-              onPress={handleSubmit}
-              className="bg-amber-600 hover:bg-amber-700 text-white font-body font-semibold"
-            >
-              {editingCategory ? 'Guardar cambios' : 'Crear categoría'}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </div>
   );
 }

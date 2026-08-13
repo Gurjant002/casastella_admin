@@ -22,7 +22,6 @@ export default function NuevoPlatoPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<ProductCreateSchema>({
-    number: 0,
     name: '',
     description: '',
     price: 0,
@@ -97,11 +96,15 @@ export default function NuevoPlatoPage() {
               <div className="grid grid-cols-2 gap-6">
                 <FormInput
                   label="Número"
-                  isRequired
                   type="number"
-                  value={String(formData.number)}
-                  onChange={(e) => setFormData({ ...formData, number: parseInt(e.target.value) || 0 })}
-                  placeholder="Ej: 1"
+                  value={formData.number?.toString() ?? ''}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      number: e.target.value ? parseInt(e.target.value) : undefined,
+                    })
+                  }
+                  placeholder="Opcional: el servidor asigna el siguiente número"
                 />
                 <FormInput
                   label="Precio"

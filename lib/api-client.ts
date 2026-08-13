@@ -74,7 +74,7 @@ export interface ProductSchema {
 }
 
 export interface ProductCreateSchema {
-  number?: number;
+  number: number;
   name: string;
   description?: string | null;
   price: number;

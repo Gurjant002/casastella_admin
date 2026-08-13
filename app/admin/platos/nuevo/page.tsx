@@ -22,6 +22,7 @@ export default function NuevoPlatoPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<ProductCreateSchema>({
+    number: 0,
     name: '',
     description: '',
     price: 0,
@@ -52,7 +53,7 @@ export default function NuevoPlatoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || !formData.category_id) {
+    if (!token || !formData.number || !formData.category_id) {
       setError('Completa todos los campos requeridos');
       return;
     }
@@ -96,15 +97,11 @@ export default function NuevoPlatoPage() {
               <div className="grid grid-cols-2 gap-6">
                 <FormInput
                   label="Número"
+                  isRequired
                   type="number"
-                  value={formData.number?.toString() ?? ''}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      number: e.target.value ? parseInt(e.target.value) : undefined,
-                    })
-                  }
-                  placeholder="Opcional: el servidor asigna el siguiente número"
+                  value={String(formData.number)}
+                  onChange={(e) => setFormData({ ...formData, number: parseInt(e.target.value) || 0 })}
+                  placeholder="Ej: 1"
                 />
                 <FormInput
                   label="Precio"
@@ -186,7 +183,7 @@ export default function NuevoPlatoPage() {
                 variant="primary"
                 size="lg"
                 isLoading={isSaving}
-                disabled={isSaving || !formData.category_id}
+                disabled={isSaving || !formData.number || !formData.category_id}
               >
                 Crear plato
               </FormButton>

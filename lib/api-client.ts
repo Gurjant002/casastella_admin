@@ -181,10 +181,9 @@ export async function createCategory(
 
 export async function updateCategory(
   token: string,
-  categoryId: number,
-  data: Partial<CategoryModel>
+  data: CategoryModel
 ): Promise<CategoryModel> {
-  return request(`/categorias/update-category/${categoryId}`, {
+  return request('/categorias/update-category', {
     method: 'PUT',
     body: data,
     token,

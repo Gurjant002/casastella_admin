@@ -84,9 +84,10 @@ export default function EditarCategoriaPage() {
 
     setIsSaving(true);
     try {
-      await updateCategory(token, categoryId, {
+      await updateCategory(token, {
         ...category,
         ...formData,
+        id: categoryId,
         description: formData.description || null,
       });
       router.push('/admin/categorias');

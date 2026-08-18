@@ -27,6 +27,13 @@ export default function AdminDashboard() {
       href: '/admin/categorias',
       color: 'from-purple-600 to-pink-600',
     },
+    {
+      title: 'Reservas',
+      description: 'Gestionar reservas de mesa',
+      icon: '📅',
+      href: '/admin/reservas',
+      color: 'from-green-600 to-teal-600',
+    },
   ];
 
   return (

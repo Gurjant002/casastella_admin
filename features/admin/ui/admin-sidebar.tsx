@@ -28,6 +28,11 @@ const MENU_ITEMS = [
     href: '/admin/horarios',
   },
   {
+    label: 'Reservas',
+    icon: '📅',
+    href: '/admin/reservas',
+  },
+  {
     label: 'Contraseña',
     icon: '🔑',
     href: '/admin/contrasena',

@@ -348,6 +348,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/redirects/cafes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Redirección a frontend (cafés)
+         * @description Redirige al dominio público del frontend (cafés).
+         */
+        get: operations["front_cafes_redirect_redirects_cafes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/redirects/cocktail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Redirección a frontend (cocktails)
+         * @description Redirige al dominio público del frontend (cocktails).
+         */
+        get: operations["front_cocktails_redirect_redirects_cocktail_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/redirects/front-end-redirect/carta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Redirección a frontend (menú)
+         * @description Redirige al dominio público del frontend (menú).
+         */
+        get: operations["front_carta_redirect_redirects_front_end_redirect_carta_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ofertas/new-product-group": {
         parameters: {
             query?: never;
@@ -928,7 +988,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/reservas/": {
+    "/reservas": {
         parameters: {
             query?: never;
             header?: never;
@@ -936,10 +996,27 @@ export interface paths {
             cookie?: never;
         };
         /** Listar reservas (admin) */
-        get: operations["list_reservations_reservas__get"];
+        get: operations["list_reservations_reservas_get"];
         put?: never;
         /** Crear reserva (guest o customer) */
-        post: operations["create_reservation_reservas__post"];
+        post: operations["create_reservation_reservas_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reservas/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar mis reservas (customer) */
+        get: operations["list_my_reservations_reservas_me_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -961,6 +1038,23 @@ export interface paths {
         head?: never;
         /** Cambiar estado de reserva (admin) */
         patch: operations["update_reservation_status_reservas__reservation_id__status_patch"];
+        trace?: never;
+    };
+    "/reservas/group-by-date": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Agrupar reservas por fecha (admin) */
+        get: operations["group_reservations_by_date_reservas_group_by_date_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/alergenos/": {
@@ -1614,6 +1708,11 @@ export interface components {
             /** Afternoon Close Time */
             afternoon_close_time?: string | null;
             /**
+             * Max Capacity
+             * @default 40
+             */
+            max_capacity: number;
+            /**
              * Closed
              * @default false
              */
@@ -1741,6 +1840,11 @@ export interface components {
              * @default true
              */
             available: boolean;
+            /**
+             * Is Orderable
+             * @default true
+             */
+            is_orderable: boolean;
             /**
              * Is Spicy
              * @default false
@@ -1935,6 +2039,11 @@ export interface components {
              */
             available: boolean;
             /**
+             * Is Orderable
+             * @default true
+             */
+            is_orderable: boolean;
+            /**
              * Is Spicy
              * @default false
              */
@@ -2039,6 +2148,20 @@ export interface components {
         /** ReservationStatusUpdateSchema */
         ReservationStatusUpdateSchema: {
             status: components["schemas"]["ReservationStatusEnum"];
+        };
+        /** ReservationsByDateSchema */
+        ReservationsByDateSchema: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Total Reservations */
+            total_reservations: number;
+            /** Total Guests */
+            total_guests: number;
+            /** Reservations */
+            reservations: components["schemas"]["ReservationSchema"][];
         };
         /** SaborPizza */
         SaborPizza: {
@@ -3011,7 +3134,7 @@ export interface operations {
                     "application/json": components["schemas"]["CustomerCartResponse"];
                 };
             };
-            /** @description Validación fallida (cantidad o disponibilidad) */
+            /** @description Validación fallida (cantidad, disponibilidad o producto no seleccionable para pedido) */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3235,6 +3358,60 @@ export interface operations {
         };
     };
     front_end_redirect_redirects_front_end_redirect_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            307: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    front_cafes_redirect_redirects_cafes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            307: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    front_cocktails_redirect_redirects_cocktail_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            307: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    front_carta_redirect_redirects_front_end_redirect_carta_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -4906,7 +5083,7 @@ export interface operations {
             };
         };
     };
-    list_reservations_reservas__get: {
+    list_reservations_reservas_get: {
         parameters: {
             query?: {
                 status?: components["schemas"]["ReservationStatusEnum"] | null;
@@ -4938,7 +5115,7 @@ export interface operations {
             };
         };
     };
-    create_reservation_reservas__post: {
+    create_reservation_reservas_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -4958,6 +5135,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReservationSchema"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_my_reservations_reservas_me_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReservationSchema"][];
                 };
             };
             /** @description Validation Error */
@@ -4993,6 +5201,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReservationSchema"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    group_reservations_by_date_reservas_group_by_date_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReservationsByDateSchema"][];
                 };
             };
             /** @description Validation Error */

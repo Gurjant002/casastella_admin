@@ -95,6 +95,13 @@ export type ReservationStatusUpdateSchema = {
   status: ReservationStatus;
 };
 
+export type ReservationsByDateSchema = {
+  date: string;
+  total_reservations: number;
+  total_guests: number;
+  reservations: ReservationSchema[];
+};
+
 export type OpeningHoursSchema = {
   id?: number | null;
   day_of_week: string;
@@ -198,16 +205,25 @@ export async function getProducts(params: ProductSearchParams = {}) {
   );
 }
 
-export async function listReservations(params: {status?: ReservationStatus | null; limit?: number} = {}) {
-  return requestJson<ReservationSchema[]>('/reservas/', {
+export async function listReservations(params: {status?: ReservationStatus | null; limit?: number} = {}, token?: string) {
+  return requestJson<ReservationSchema[]>('/reservas', {
     query: params,
+    token,
   });
 }
 
-export async function updateReservationStatus(reservationId: number, status: ReservationStatus) {
+export async function updateReservationStatus(reservationId: number, status: ReservationStatus, token?: string) {
   return requestJson<ReservationSchema>(`/reservas/${reservationId}/status`, {
     method: 'PATCH',
     body: {status} satisfies ReservationStatusUpdateSchema,
+    token,
+  });
+}
+
+export async function groupReservationsByDate(limit = 200, token?: string) {
+  return requestJson<ReservationsByDateSchema[]>('/reservas/group-by-date', {
+    query: {limit},
+    token,
   });
 }
 

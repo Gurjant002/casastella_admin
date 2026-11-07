@@ -139,6 +139,7 @@ export async function getProducts(
     lang?: string;
     category_id?: number;
     available?: boolean;
+    refresh_cache?: boolean;
   }
 ): Promise<ProductSchema[]> {
   return request('/productos/get-products', {

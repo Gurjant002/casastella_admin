@@ -43,8 +43,8 @@ export default function PlatosPage() {
     setIsLoading(true);
     try {
       const [availableData, unavailableData, categoriesData] = await Promise.all([
-        getProducts(token, { available: true }),
-        getProducts(token, { available: false }),
+        getProducts(token, { available: true, refresh_cache: true }),
+        getProducts(token, { available: false, refresh_cache: true }),
         getCategories(token),
       ]);
       // Combinar disponibles y no disponibles, evitando duplicados por id

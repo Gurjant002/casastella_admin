@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardBody, CardHeader } from '@heroui/react';
+import { Card } from '@heroui/react';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
@@ -50,15 +50,15 @@ export default function AdminDashboard() {
               backgroundColor: 'var(--admin-bg-card)', 
               borderColor: 'var(--admin-border)',
             }}>
-              <CardHeader className="flex gap-3">
+              <Card.Header className="flex gap-3">
                 <span className="text-4xl">{module.icon}</span>
                 <div className="flex flex-col">
                   <p className="font-display text-xl" style={{ color: 'var(--color-gold)' }}>{module.title}</p>
                 </div>
-              </CardHeader>
-              <CardBody>
+              </Card.Header>
+              <Card.Content>
                 <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{module.description}</p>
-              </CardBody>
+              </Card.Content>
             </Card>
           </Link>
         ))}

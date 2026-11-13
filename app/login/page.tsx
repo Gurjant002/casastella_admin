@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, CardBody, CardHeader } from '@heroui/react';
+import { Button, Card } from '@heroui/react';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import { loginAdmin } from '@/lib/api-client';
 
@@ -89,11 +89,11 @@ export default function LoginPage() {
   return (
     <div className="cs-container min-h-screen flex items-center justify-center py-10 bg-black">
       <Card className="w-full max-w-md border" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--admin-border)' }}>
-        <CardHeader className="flex flex-col items-center gap-3 px-6 py-8 border-b" style={{ borderColor: 'var(--admin-border)' }}>
+        <Card.Header className="flex flex-col items-center gap-3 px-6 py-8 border-b" style={{ borderColor: 'var(--admin-border)' }}>
           <h1 className="font-display text-4xl" style={{ color: 'var(--color-gold)' }}>Casa Stella</h1>
           <p className="font-body text-sm" style={{ color: 'var(--color-cream-muted)' }}>Panel de administración</p>
-        </CardHeader>
-        <CardBody className="gap-4 px-6 pb-8">
+        </Card.Header>
+        <Card.Content className="gap-4 px-6 pb-8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <LoginInput
               label="Usuario"
@@ -129,13 +129,13 @@ export default function LoginPage() {
               type="submit"
               className="w-full font-body font-semibold uppercase tracking-wider text-black"
               style={{ backgroundColor: 'var(--color-gold)' }}
-              isLoading={isLoading}
-              disabled={isLoading || !username || !password}
+              isPending={isLoading}
+              isDisabled={isLoading || !username || !password}
             >
               {isLoading ? 'Ingresando...' : 'Ingresar'}
             </Button>
           </form>
-        </CardBody>
+        </Card.Content>
       </Card>
     </div>
   );

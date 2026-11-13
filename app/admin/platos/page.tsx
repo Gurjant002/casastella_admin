@@ -3,18 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import {
   Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
-  Chip,
   Card,
-  CardBody,
-  CardHeader,
 } from '@heroui/react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import {
@@ -112,15 +103,15 @@ export default function PlatosPage() {
 
       {error && (
         <Card className="mb-6 border" style={{ backgroundColor: 'rgba(192, 57, 43, 0.1)', borderColor: 'var(--color-danger)' }}>
-          <CardBody>
+          <Card.Content>
             <p className="font-body" style={{ color: '#ff9999' }}>{error}</p>
-          </CardBody>
+          </Card.Content>
         </Card>
       )}
 
       {!isLoading && categories.length > 0 && (
         <Card className="mb-6 border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-          <CardBody className="py-4">
+          <Card.Content className="py-4">
             <div className="flex items-center gap-3 flex-wrap">
               <p className="font-body font-semibold" style={{ color: 'var(--color-cream)' }}>Filtrar por categoría:</p>
               <button
@@ -150,7 +141,7 @@ export default function PlatosPage() {
                 );
               })}
             </div>
-          </CardBody>
+          </Card.Content>
         </Card>
       )}
 
@@ -161,37 +152,34 @@ export default function PlatosPage() {
         </div>
       ) : (
         <Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-          <Table
-            aria-label="Tabla de platos"
-            classNames={{
-              table: 'font-body',
-              th: 'font-display',
-              td: 'font-body',
-            }}
-          >
-            <TableHeader>
-              <TableColumn>Nº</TableColumn>
-              <TableColumn>Nombre</TableColumn>
-              <TableColumn>Categoría</TableColumn>
-              <TableColumn>Precio</TableColumn>
-              <TableColumn>Estado</TableColumn>
-              <TableColumn>Acciones</TableColumn>
-            </TableHeader>
-            <TableBody
-              emptyContent={
-                <div className="text-center py-12">
-                  <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>
-                    {selectedCategoryId
-                      ? 'No hay platos en esta categoría'
-                      : 'No hay platos registrados'}
-                  </p>
-                </div>
-              }
-            >
-              {filteredProducts.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell style={{ color: 'var(--color-cream-muted)' }}>{product.number}</TableCell>
-                  <TableCell>
+          <Table>
+            <Table.ScrollContainer>
+              <Table.Content aria-label="Tabla de platos" className="font-body">
+                <Table.Header>
+                  <Table.Column className="font-display">Nº</Table.Column>
+                  <Table.Column className="font-display">Nombre</Table.Column>
+                  <Table.Column className="font-display">Categoría</Table.Column>
+                  <Table.Column className="font-display">Precio</Table.Column>
+                  <Table.Column className="font-display">Estado</Table.Column>
+                  <Table.Column className="font-display">Acciones</Table.Column>
+                </Table.Header>
+                <Table.Body>
+                  {filteredProducts.length === 0 ? (
+                    <Table.Row>
+                      <Table.Cell colSpan={6}>
+                        <div className="text-center py-12">
+                          <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>
+                            {selectedCategoryId
+                              ? 'No hay platos en esta categoría'
+                              : 'No hay platos registrados'}
+                          </p>
+                        </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  ) : filteredProducts.map((product) => (
+                    <Table.Row key={product.id}>
+                  <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{product.number}</Table.Cell>
+                  <Table.Cell className="font-body">
                     <div>
                       <p className="font-semibold" style={{ color: 'var(--color-cream)' }}>{product.name}</p>
                       {product.description && (
@@ -200,22 +188,22 @@ export default function PlatosPage() {
                         </p>
                       )}
                     </div>
-                  </TableCell>
-                  <TableCell style={{ color: 'var(--color-cream-muted)' }}>{product.category?.name}</TableCell>
-                  <TableCell className="font-semibold" style={{ color: 'var(--color-gold)' }}>${product.price.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Chip
-                      startContent={product.available ? '✓' : '✗'}
-                      className={`${
+                  </Table.Cell>
+                  <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{product.category?.name}</Table.Cell>
+                  <Table.Cell className="font-body font-semibold" style={{ color: 'var(--color-gold)' }}>${product.price.toFixed(2)}</Table.Cell>
+                  <Table.Cell className="font-body">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-body ${
                         product.available
                           ? 'bg-green-600/30 text-green-200'
                           : 'bg-red-600/30 text-red-200'
-                      } font-body`}
+                      }`}
                     >
+                      {product.available ? '✓' : '✗'}
                       {product.available ? 'Disponible' : 'No disponible'}
-                    </Chip>
-                  </TableCell>
-                  <TableCell>
+                    </span>
+                  </Table.Cell>
+                  <Table.Cell className="font-body">
                     <div className="flex gap-2">
                       <Button
                         isIconOnly
@@ -237,10 +225,12 @@ export default function PlatosPage() {
                         {product.available ? '🚫' : '✓'}
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                  </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Content>
+            </Table.ScrollContainer>
           </Table>
         </Card>
       )}

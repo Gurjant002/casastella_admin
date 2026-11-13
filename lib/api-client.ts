@@ -214,8 +214,10 @@ export async function updateCategory(
 export interface OpeningHoursSchema {
   id?: number | null;
   day_of_week: string;
+  is_morning_close: boolean;
   morning_open_time?: string | null;
   morning_close_time?: string | null;
+  is_afternoon_close: boolean;
   afternoon_open_time?: string | null;
   afternoon_close_time?: string | null;
   closed?: boolean;

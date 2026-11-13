@@ -1,7 +1,6 @@
 import type {Metadata} from 'next';
 import {Cormorant_Garamond, Libre_Baskerville} from 'next/font/google';
 import './globals.css';
-import {HeroUIProvider} from '@heroui/react';
 import {AuthProvider} from '@/features/admin/auth/auth-context';
 
 const displayFont = Cormorant_Garamond({
@@ -27,9 +26,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${displayFont.variable} ${bodyFont.variable} min-h-screen antialiased`} style={{ backgroundColor: 'var(--color-black)' }}>
-        <HeroUIProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </HeroUIProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

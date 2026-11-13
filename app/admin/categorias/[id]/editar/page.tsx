@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody } from '@heroui/react';
+import { Card } from '@heroui/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import { getCategories, updateCategory, CategoryModel } from '@/lib/api-client';
@@ -113,12 +113,12 @@ export default function EditarCategoriaPage() {
     return (
       <div className="p-8">
         <Card className="border" style={{ backgroundColor: 'rgba(220, 38, 38, 0.1)', borderColor: 'var(--color-danger)' }}>
-          <CardBody>
+          <Card.Content className="flex flex-col gap-4">
             <p className="font-body font-semibold" style={{ color: '#ff9999' }}>⚠️ {error}</p>
             <FormButton onClick={() => router.back()} variant="primary" size="md">
               Volver
             </FormButton>
-          </CardBody>
+          </Card.Content>
         </Card>
       </div>
     );
@@ -136,7 +136,7 @@ export default function EditarCategoriaPage() {
       </div>
 
       <Card className="max-w-2xl border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-        <CardBody className="gap-8 p-8">
+        <Card.Content className="gap-8 p-8">
           {error && (
             <div className="rounded-lg p-4 border-2" style={{ backgroundColor: 'rgba(220, 38, 38, 0.1)', borderColor: 'var(--color-danger)' }}>
               <p className="font-body font-semibold" style={{ color: '#ff9999' }}>⚠️ {error}</p>
@@ -204,7 +204,7 @@ export default function EditarCategoriaPage() {
               </FormButton>
             </div>
           </form>
-        </CardBody>
+        </Card.Content>
       </Card>
     </div>
   );

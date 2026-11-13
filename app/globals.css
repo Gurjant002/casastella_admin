@@ -1,5 +1,5 @@
-/* @import "@heroui/react/styles"; */
 @import "tailwindcss";
+@import "@heroui/styles";
 
 :root {
 /* Casa Stella — tokens base (design system) */
@@ -454,6 +454,5 @@ border-color: var(--color-gold);
 box-shadow: var(--shadow-gold);
 transition: 0.25s ease;
 }
-
 
 

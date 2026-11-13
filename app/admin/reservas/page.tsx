@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, CardBody } from '@heroui/react';
+import { Card } from '@heroui/react';
 import { groupReservationsByDate, ReservationSchema, ReservationsByDateSchema, ReservationStatus, updateReservationStatus } from '@/lib/api';
 import { useAuth } from '@/features/admin/auth/auth-context';
 
@@ -101,7 +101,7 @@ export default function ReservasPage() {
 
 			<div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)]">
 				<Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-					<CardBody className="p-4 sm:p-6">
+					<Card.Content className="p-4 sm:p-6">
 						<div className="mb-6 flex items-center justify-between">
 							<h2 className="font-display text-3xl capitalize" style={{ color: 'var(--color-cream)' }}>{MONTHS[month.getMonth()]} {month.getFullYear()}</h2>
 							<span className="font-body text-sm" style={{ color: 'var(--color-cream-muted)' }}>{groups.length} días con reservas</span>
@@ -120,17 +120,17 @@ export default function ReservasPage() {
 							})}
 						</div>
 						<div className="mt-5 flex items-center gap-2 font-body text-xs" style={{ color: 'var(--color-cream-muted)' }}><span className="h-2 w-2 rounded-full" style={{ backgroundColor: 'var(--color-gold)' }} /> Día con reservas</div>
-					</CardBody>
+					</Card.Content>
 				</Card>
 
 				<Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-					<CardBody className="p-5 sm:p-6">
+					<Card.Content className="p-5 sm:p-6">
 						<div className="mb-5 flex items-end justify-between border-b pb-4" style={{ borderColor: 'var(--admin-border)' }}>
 							<div><p className="font-body text-xs uppercase tracking-wider" style={{ color: 'var(--color-cream-muted)' }}>Detalle del día</p><h2 className="font-display text-3xl" style={{ color: 'var(--color-gold)' }}>{selectedDate ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long' }).format(new Date(`${selectedDate}T12:00:00`)) : 'Selecciona un día'}</h2></div>
 							{selectedGroup && <span className="font-body text-sm" style={{ color: 'var(--color-cream-muted)' }}>{selectedGroup.total_guests} comensales</span>}
 						</div>
 						{isLoading ? <p className="py-8 text-center font-body" style={{ color: 'var(--color-cream-muted)' }}>Cargando reservas...</p> : selectedGroup?.reservations.length ? <div className="space-y-3">{selectedGroup.reservations.map((reservation: ReservationSchema) => <ReservationRow key={reservation.id} reservation={reservation} isUpdating={updatingReservationId === reservation.id} onStatusChange={handleStatusChange} />)}</div> : <p className="py-8 text-center font-body" style={{ color: 'var(--color-cream-muted)' }}>No hay reservas para este día.</p>}
-					</CardBody>
+					</Card.Content>
 				</Card>
 			</div>
 		</div>

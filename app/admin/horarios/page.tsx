@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody } from '@heroui/react';
+import { Card, Label, Switch } from '@heroui/react';
+import { Check } from 'lucide-react';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import { getOpeningHours, setOpeningHours, OpeningHoursSchema } from '@/lib/api-client';
 import { FormButton } from '@/features/admin/ui/button-components';
@@ -53,8 +54,10 @@ export default function HorariosPage() {
 
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
   const [applyClosed, setApplyClosed] = useState(false);
+  const [applyMorningClosed, setApplyMorningClosed] = useState(false);
   const [applyMorningOpen, setApplyMorningOpen] = useState('');
   const [applyMorningClose, setApplyMorningClose] = useState('');
+  const [applyAfternoonClosed, setApplyAfternoonClosed] = useState(false);
   const [applyAfternoonOpen, setApplyAfternoonOpen] = useState('');
   const [applyAfternoonClose, setApplyAfternoonClose] = useState('');
 
@@ -106,10 +109,12 @@ export default function HorariosPage() {
             ...existing,
             day_of_week: key,
             closed: applyClosed,
-            morning_open_time: applyClosed ? null : applyMorningOpen || null,
-            morning_close_time: applyClosed ? null : applyMorningClose || null,
-            afternoon_open_time: applyClosed ? null : (applyAfternoonOpen || null),
-            afternoon_close_time: applyClosed ? null : (applyAfternoonClose || null),
+            is_morning_close: applyClosed || applyMorningClosed,
+            morning_open_time: applyClosed || applyMorningClosed ? null : (applyMorningOpen || null),
+            morning_close_time: applyClosed || applyMorningClosed ? null : (applyMorningClose || null),
+            is_afternoon_close: applyClosed || applyAfternoonClosed,
+            afternoon_open_time: applyClosed || applyAfternoonClosed ? null : (applyAfternoonOpen || null),
+            afternoon_close_time: applyClosed || applyAfternoonClosed ? null : (applyAfternoonClose || null),
           };
           const saved = await setOpeningHours(token, payload);
           updated.set(key, saved);
@@ -121,6 +126,8 @@ export default function HorariosPage() {
       setApplyMorningClose('');
       setApplyAfternoonOpen('');
       setApplyAfternoonClose('');
+      setApplyMorningClosed(false);
+      setApplyAfternoonClosed(false);
       setApplyClosed(false);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -165,7 +172,7 @@ export default function HorariosPage() {
           {/* Lista de días */}
           <div className="lg:col-span-2">
             <Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-              <CardBody className="p-0">
+              <Card.Content className="p-0">
                 {/* Cabecera */}
                 <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--admin-border)' }}>
                   <span className="font-display text-lg" style={{ color: 'var(--color-gold)' }}>Días de la semana</span>
@@ -234,7 +241,9 @@ export default function HorariosPage() {
 
                       {/* Horario mañana */}
                       <div className="col-span-3 text-center">
-                        {!h?.closed && h?.morning_open_time ? (
+                        {h?.is_morning_close ? (
+                          <span className="font-body text-xs" style={{ color: 'var(--color-cream-muted)' }}>Cerrado</span>
+                        ) : !h?.closed && h?.morning_open_time ? (
                           <span className="font-display text-sm" style={{ color: 'var(--color-cream-muted)' }}>
                             {formatTime(h.morning_open_time)} – {formatTime(h.morning_close_time)}
                           </span>
@@ -245,7 +254,9 @@ export default function HorariosPage() {
 
                       {/* Horario tarde */}
                       <div className="col-span-4 text-center">
-                        {!h?.closed && h?.afternoon_open_time ? (
+                        {h?.is_afternoon_close ? (
+                          <span className="font-body text-xs" style={{ color: 'var(--color-cream-muted)' }}>Cerrado</span>
+                        ) : !h?.closed && h?.afternoon_open_time ? (
                           <span className="font-display text-sm" style={{ color: 'var(--color-cream-muted)' }}>
                             {formatTime(h.afternoon_open_time)} – {formatTime(h.afternoon_close_time)}
                           </span>
@@ -256,14 +267,14 @@ export default function HorariosPage() {
                     </div>
                   );
                 })}
-              </CardBody>
+              </Card.Content>
             </Card>
           </div>
 
           {/* Panel de edición */}
           <div className="lg:col-span-1">
             <Card className="border sticky top-8" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: selectedDays.length > 0 ? 'var(--color-gold)' : 'var(--admin-border)', transition: 'border-color 0.2s' }}>
-              <CardBody className="p-6 gap-5 flex flex-col">
+              <Card.Content className="p-6 gap-5 flex flex-col">
                 {/* Título */}
                 <div>
                   <h3 className="font-display text-xl mb-1" style={{ color: 'var(--color-gold)' }}>Aplicar horario</h3>
@@ -321,16 +332,32 @@ export default function HorariosPage() {
                     {/* Mañana */}
                     <div>
                       <p className="font-display text-sm mb-3" style={{ color: 'var(--color-gold)' }}>Mañana</p>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Apertura *</label>
-                          {timeInput(applyMorningOpen, setApplyMorningOpen)}
+                      <Switch
+                        isSelected={applyMorningClosed}
+                        onChange={setApplyMorningClosed}
+                        className="mb-3"
+                      >
+                        <Switch.Content>
+                          <Switch.Control>
+                            <Switch.Thumb>
+                              <Switch.Icon><Check className="size-3" /></Switch.Icon>
+                            </Switch.Thumb>
+                          </Switch.Control>
+                          <Label className="font-body text-sm" style={{ color: 'var(--color-cream-muted)' }}>Cerrado por la mañana</Label>
+                        </Switch.Content>
+                      </Switch>
+                      {!applyMorningClosed && (
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Apertura *</label>
+                            {timeInput(applyMorningOpen, setApplyMorningOpen)}
+                          </div>
+                          <div>
+                            <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Cierre *</label>
+                            {timeInput(applyMorningClose, setApplyMorningClose)}
+                          </div>
                         </div>
-                        <div>
-                          <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Cierre *</label>
-                          {timeInput(applyMorningClose, setApplyMorningClose)}
-                        </div>
-                      </div>
+                      )}
                     </div>
 
                     {/* Tarde */}
@@ -338,16 +365,32 @@ export default function HorariosPage() {
                       <p className="font-display text-sm mb-3" style={{ color: 'var(--color-gold)' }}>
                         Tarde <span className="font-body text-xs font-normal" style={{ color: 'var(--color-cream-muted)' }}>(opcional)</span>
                       </p>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Apertura</label>
-                          {timeInput(applyAfternoonOpen, setApplyAfternoonOpen)}
+                      <Switch
+                        isSelected={applyAfternoonClosed}
+                        onChange={setApplyAfternoonClosed}
+                        className="mb-3"
+                      >
+                        <Switch.Content>
+                          <Switch.Control>
+                            <Switch.Thumb>
+                              <Switch.Icon><Check className="size-3" /></Switch.Icon>
+                            </Switch.Thumb>
+                          </Switch.Control>
+                          <Label className="font-body text-sm" style={{ color: 'var(--color-cream-muted)' }}>Cerrado por la tarde</Label>
+                        </Switch.Content>
+                      </Switch>
+                      {!applyAfternoonClosed && (
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Apertura</label>
+                            {timeInput(applyAfternoonOpen, setApplyAfternoonOpen)}
+                          </div>
+                          <div>
+                            <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Cierre</label>
+                            {timeInput(applyAfternoonClose, setApplyAfternoonClose)}
+                          </div>
                         </div>
-                        <div>
-                          <label className="font-body text-xs block mb-1" style={{ color: 'var(--color-cream-muted)' }}>Cierre</label>
-                          {timeInput(applyAfternoonClose, setApplyAfternoonClose)}
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </>
                 )}
@@ -362,7 +405,7 @@ export default function HorariosPage() {
                 >
                   Guardar cambios
                 </FormButton>
-              </CardBody>
+              </Card.Content>
             </Card>
           </div>
 

@@ -3,14 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
   Card,
-  CardBody,
 } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/admin/auth/auth-context';
@@ -79,9 +73,9 @@ export default function CategoriasPage() {
 
       {error && (
         <Card className="mb-6 border" style={{ backgroundColor: 'rgba(192, 57, 43, 0.1)', borderColor: 'var(--color-danger)' }}>
-          <CardBody>
+          <Card.Content>
             <p className="font-body" style={{ color: '#ff9999' }}>{error}</p>
-          </CardBody>
+          </Card.Content>
         </Card>
       )}
 
@@ -92,33 +86,30 @@ export default function CategoriasPage() {
         </div>
       ) : (
         <Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-          <Table
-            aria-label="Tabla de categorías"
-            classNames={{
-              table: 'font-body',
-              th: 'font-display',
-              td: 'font-body',
-            }}
-          >
-            <TableHeader>
-              <TableColumn>Nombre</TableColumn>
-              <TableColumn>Nombre común</TableColumn>
-              <TableColumn>Estado</TableColumn>
-              <TableColumn>Descripción</TableColumn>
-              <TableColumn>Acciones</TableColumn>
-            </TableHeader>
-            <TableBody
-              emptyContent={
-                <div className="text-center py-12">
-                  <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>No hay categorías registradas</p>
-                </div>
-              }
-            >
-              {categories.map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell className="font-semibold" style={{ color: 'var(--color-cream)' }}>{category.name}</TableCell>
-                  <TableCell style={{ color: 'var(--color-cream-muted)' }}>{category.common_name}</TableCell>
-                  <TableCell>
+          <Table>
+            <Table.ScrollContainer>
+              <Table.Content aria-label="Tabla de categorías" className="font-body">
+                <Table.Header>
+                  <Table.Column className="font-display">Nombre</Table.Column>
+                  <Table.Column className="font-display">Nombre común</Table.Column>
+                  <Table.Column className="font-display">Estado</Table.Column>
+                  <Table.Column className="font-display">Descripción</Table.Column>
+                  <Table.Column className="font-display">Acciones</Table.Column>
+                </Table.Header>
+                <Table.Body>
+                  {categories.length === 0 ? (
+                    <Table.Row>
+                      <Table.Cell colSpan={5}>
+                        <div className="text-center py-12">
+                          <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>No hay categorías registradas</p>
+                        </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  ) : categories.map((category) => (
+                    <Table.Row key={category.id}>
+                      <Table.Cell className="font-semibold" style={{ color: 'var(--color-cream)' }}>{category.name}</Table.Cell>
+                      <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{category.common_name}</Table.Cell>
+                      <Table.Cell className="font-body">
                     <span
                       className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
                       style={{
@@ -129,11 +120,11 @@ export default function CategoriasPage() {
                     >
                       {category.available === false ? 'Desactivada' : 'Activa'}
                     </span>
-                  </TableCell>
-                  <TableCell className="text-sm" style={{ color: 'var(--color-cream-muted)', whiteSpace: 'pre-line' }}>
+                      </Table.Cell>
+                      <Table.Cell className="font-body text-sm" style={{ color: 'var(--color-cream-muted)', whiteSpace: 'pre-line' }}>
                     {category.description?.substring(0, 80) || '-'}
-                  </TableCell>
-                  <TableCell>
+                      </Table.Cell>
+                      <Table.Cell className="font-body">
                     <Button
                       isIconOnly
                       size="sm"
@@ -142,10 +133,12 @@ export default function CategoriasPage() {
                     >
                       ✏️
                     </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Content>
+            </Table.ScrollContainer>
           </Table>
         </Card>
       )}

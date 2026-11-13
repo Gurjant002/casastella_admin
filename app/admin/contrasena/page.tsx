@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardBody } from '@heroui/react';
+import { Card } from '@heroui/react';
 import { useAuth } from '@/features/admin/auth/auth-context';
 import { changePassword } from '@/lib/api-client';
 import { FormButton } from '@/features/admin/ui/button-components';
@@ -112,7 +112,7 @@ export default function ContrasenaPage() {
       </div>
 
       <Card className="max-w-md border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-        <CardBody className="p-8">
+        <Card.Content className="p-8">
           {error && (
             <div className="mb-6 rounded-lg p-4 border-2" style={{ backgroundColor: 'rgba(220,38,38,0.1)', borderColor: 'var(--color-danger)' }}>
               <p className="font-body font-semibold text-sm" style={{ color: '#ff9999' }}>⚠️ {error}</p>
@@ -190,7 +190,7 @@ export default function ContrasenaPage() {
               Cambiar contraseña
             </FormButton>
           </form>
-        </CardBody>
+        </Card.Content>
       </Card>
     </div>
   );

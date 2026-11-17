@@ -8,13 +8,13 @@ import { getOpeningHours, setOpeningHours, OpeningHoursSchema } from '@/lib/api-
 import { FormButton } from '@/features/admin/ui/button-components';
 
 const DAYS: { label: string; key: string }[] = [
-  { label: 'Lunes',     key: 'Monday' },
-  { label: 'Martes',    key: 'Tuesday' },
+  { label: 'Lunes', key: 'Monday' },
+  { label: 'Martes', key: 'Tuesday' },
   { label: 'Miércoles', key: 'Wednesday' },
-  { label: 'Jueves',    key: 'Thursday' },
-  { label: 'Viernes',   key: 'Friday' },
-  { label: 'Sábado',    key: 'Saturday' },
-  { label: 'Domingo',   key: 'Sunday' },
+  { label: 'Jueves', key: 'Thursday' },
+  { label: 'Viernes', key: 'Friday' },
+  { label: 'Sábado', key: 'Saturday' },
+  { label: 'Domingo', key: 'Sunday' },
 ];
 
 function timeInput(value: string, onChange: (v: string) => void, disabled?: boolean): React.ReactNode {
@@ -282,8 +282,8 @@ export default function HorariosPage() {
                     {selectedDays.length === 0
                       ? 'Selecciona uno o más días'
                       : selectedDays.length === 1
-                      ? `1 día: ${DAYS[selectedDays[0]].label}`
-                      : `${selectedDays.length} días seleccionados`}
+                        ? `1 día: ${DAYS[selectedDays[0]].label}`
+                        : `${selectedDays.length} días seleccionados`}
                   </p>
                 </div>
 

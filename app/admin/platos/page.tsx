@@ -130,7 +130,7 @@ export default function PlatosPage() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategoryId(cat.id!)}
-                    className="px-4 py-2 rounded-lg font-body text-sm font-semibold transition-colors"
+                    className="px-4 py-2 rounded-lg font-body text-sm font-semibold transition-colors cursor-pointer"
                     style={{
                       backgroundColor: selectedCategoryId === cat.id ? 'var(--color-gold)' : 'var(--admin-bg-hover)',
                       color: selectedCategoryId === cat.id ? 'var(--color-black)' : 'var(--color-cream-muted)',
@@ -151,88 +151,87 @@ export default function PlatosPage() {
           <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>Cargando platos...</p>
         </div>
       ) : (
-        <Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-          <Table>
-            <Table.ScrollContainer>
-              <Table.Content aria-label="Tabla de platos" className="font-body">
-                <Table.Header>
-                  <Table.Column className="font-display">Nº</Table.Column>
-                  <Table.Column className="font-display">Nombre</Table.Column>
-                  <Table.Column className="font-display">Categoría</Table.Column>
-                  <Table.Column className="font-display">Precio</Table.Column>
-                  <Table.Column className="font-display">Estado</Table.Column>
-                  <Table.Column className="font-display">Acciones</Table.Column>
-                </Table.Header>
-                <Table.Body>
-                  {filteredProducts.length === 0 ? (
-                    <Table.Row>
-                      <Table.Cell colSpan={6}>
-                        <div className="text-center py-12">
-                          <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>
-                            {selectedCategoryId
-                              ? 'No hay platos en esta categoría'
-                              : 'No hay platos registrados'}
-                          </p>
-                        </div>
-                      </Table.Cell>
-                    </Table.Row>
-                  ) : filteredProducts.map((product) => (
-                    <Table.Row key={product.id}>
-                  <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{product.number}</Table.Cell>
-                  <Table.Cell className="font-body">
-                    <div>
-                      <p className="font-semibold" style={{ color: 'var(--color-cream)' }}>{product.name}</p>
-                      {product.description && (
-                        <p className="text-xs" style={{ color: 'var(--color-cream-muted)', whiteSpace: 'pre-line' }}>
-                          {product.description.substring(0, 80)}...
+        <Table variant="secondary" className="menu-table">
+          <Table.ScrollContainer>
+            <Table.Content aria-label="Tabla de platos" className="font-body">
+              <Table.Header>
+                <Table.Column isRowHeader className="font-display">Nº</Table.Column>
+                <Table.Column isRowHeader className="font-display">Nombre</Table.Column>
+                <Table.Column isRowHeader className="font-display">Categoría</Table.Column>
+                <Table.Column isRowHeader className="font-display">Precio</Table.Column>
+                <Table.Column isRowHeader className="font-display">Estado</Table.Column>
+                <Table.Column isRowHeader className="font-display">Acciones</Table.Column>
+              </Table.Header>
+              <Table.Body>
+                {filteredProducts.length === 0 ? (
+                  <Table.Row>
+                    <Table.Cell colSpan={6}>
+                      <div className="text-center py-12">
+                        <p className="font-body" style={{ color: 'var(--color-cream-muted)' }}>
+                          {selectedCategoryId
+                            ? 'No hay platos en esta categoría'
+                            : 'No hay platos registrados'}
                         </p>
-                      )}
-                    </div>
-                  </Table.Cell>
-                  <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{product.category?.name}</Table.Cell>
-                  <Table.Cell className="font-body font-semibold" style={{ color: 'var(--color-gold)' }}>${product.price.toFixed(2)}</Table.Cell>
-                  <Table.Cell className="font-body">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-body ${
-                        product.available
-                          ? 'bg-green-600/30 text-green-200'
-                          : 'bg-red-600/30 text-red-200'
-                      }`}
-                    >
-                      {product.available ? '✓' : '✗'}
-                      {product.available ? 'Disponible' : 'No disponible'}
-                    </span>
-                  </Table.Cell>
-                  <Table.Cell className="font-body">
-                    <div className="flex gap-2">
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-black)' }}
-                        onPress={() => handleOpenModal(product)}
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                ) : filteredProducts.map((product) => (
+                  <Table.Row key={product.id}>
+                    <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{product.number}</Table.Cell>
+                    <Table.Cell className="font-body">
+                      <div>
+                        <p className="font-semibold" style={{ color: 'var(--color-cream)' }}>{product.name}</p>
+                        {product.description && (
+                          <p className="text-xs" style={{ color: 'var(--color-cream-muted)', whiteSpace: 'pre-line' }}>
+                            {product.description.substring(0, 80)}...
+                          </p>
+                        )}
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell className="font-body" style={{ color: 'var(--color-cream-muted)' }}>{product.category?.name}</Table.Cell>
+                    <Table.Cell className="font-body font-semibold" style={{ color: 'var(--color-gold)' }}>{product.price.toFixed(2)}€</Table.Cell>
+                    <Table.Cell className="font-body">
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-body ${product.available
+                            ? 'bg-green-600/30 text-green-200'
+                            : 'bg-red-600/30 text-red-200'
+                          }`}
                       >
-                        ✏️
-                      </Button>
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        style={{
-                          backgroundColor: product.available ? 'rgba(192, 57, 43, 0.5)' : 'rgba(22, 163, 74, 0.5)',
-                          color: product.available ? '#fca5a5' : '#86efac',
-                        }}
-                        onPress={() => toggleAvailability(product)}
-                      >
-                        {product.available ? '🚫' : '✓'}
-                      </Button>
-                    </div>
-                  </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table.Content>
-            </Table.ScrollContainer>
-          </Table>
-        </Card>
+                        {product.available ? '✓ ' : '✗ '}
+                        {product.available ? 'Disponible' : 'No disponible'}
+                      </span>
+                    </Table.Cell>
+                    <Table.Cell className="font-body">
+                      <div className="flex gap-2">
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-black)' }}
+                          onPress={() => handleOpenModal(product)}
+                        >
+                          ✏️
+                        </Button>
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          style={{
+                            backgroundColor: product.available ? 'rgba(192, 57, 43, 0.5)' : 'rgba(22, 163, 74, 0.5)',
+                            color: product.available ? '#fca5a5' : '#86efac',
+                          }}
+                          onPress={() => toggleAvailability(product)}
+                        >
+                          {product.available ? '🚫' : '✓'}
+                        </Button>
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+        </Table>
+        // <Card className="border">
+        // </Card>
       )}
     </div>
   );

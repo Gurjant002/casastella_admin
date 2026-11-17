@@ -109,6 +109,26 @@ a {
   font-family: var(--font-body);
 }
 
+/* BACKGROUNDS */
+.bg-cs-black {
+  background: var(--color-black);
+}
+.bg-cs-gold {
+  background: var(--color-gold);
+}
+.bg-cs-gold-light {
+  background: var(--color-gold-light);
+}
+.bg-cs-cream {
+  background: var(--color-cream);
+}
+.bg-cs-cream-muted {
+  background: var(--color-cream-muted);
+}
+.bg-cs-brown {
+  background: var(--color-brown);
+}
+
 /* Buttons (Casa Stella — Art Déco) */
 .btn-primary,
 .btn-secondary,
@@ -455,4 +475,8 @@ box-shadow: var(--shadow-gold);
 transition: 0.25s ease;
 }
 
+.menu-table .table__row:hover .table__cell,
+.menu-table .table__row[data-hovered="true"] .table__cell {
+  background-color: transparent;
+}
 

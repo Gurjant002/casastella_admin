@@ -86,15 +86,15 @@ export default function CategoriasPage() {
         </div>
       ) : (
         <Card className="border" style={{ backgroundColor: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)' }}>
-          <Table>
+          <Table variant="secondary" className="menu-table">
             <Table.ScrollContainer>
               <Table.Content aria-label="Tabla de categorías" className="font-body">
                 <Table.Header>
-                  <Table.Column className="font-display">Nombre</Table.Column>
-                  <Table.Column className="font-display">Nombre común</Table.Column>
-                  <Table.Column className="font-display">Estado</Table.Column>
-                  <Table.Column className="font-display">Descripción</Table.Column>
-                  <Table.Column className="font-display">Acciones</Table.Column>
+                  <Table.Column isRowHeader className="font-display">Nombre</Table.Column>
+                  <Table.Column isRowHeader className="font-display">Nombre común</Table.Column>
+                  <Table.Column isRowHeader className="font-display">Estado</Table.Column>
+                  <Table.Column isRowHeader className="font-display">Descripción</Table.Column>
+                  <Table.Column isRowHeader className="font-display">Acciones</Table.Column>
                 </Table.Header>
                 <Table.Body>
                   {categories.length === 0 ? (

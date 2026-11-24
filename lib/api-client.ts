@@ -29,7 +29,7 @@ function normalizeRequestBody(value: unknown): unknown {
 
 async function request<T>(
   path: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {}  
 ): Promise<T> {
   const { method = 'GET', query, body, token } = options;
   const normalizedBody = body ? normalizeRequestBody(body) : undefined;

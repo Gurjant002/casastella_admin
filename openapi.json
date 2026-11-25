@@ -2873,43 +2873,6 @@
         }
       }
     },
-    "/productos/seed-casa-stella": {
-      "post": {
-        "tags": [
-          "Productos"
-        ],
-        "summary": "Importar carta Casa Stella desde JSON (admin)",
-        "description": "Lanza un job en segundo plano para importar `menu_casa_stella/menu_casa_stella.json` (categorías, productos y alérgenos). Es fire-and-forget.",
-        "operationId": "seed_casa_stella_menu_productos_seed_casa_stella_post",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Error interno",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
     "/productos": {
       "get": {
         "tags": [
@@ -3008,6 +2971,15 @@
               "type": "boolean",
               "default": true,
               "title": "Available"
+            }
+          },
+          {
+            "name": "refresh_cache",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Refresh Cache"
             }
           }
         ],
@@ -3258,7 +3230,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/productos/create-product": {
@@ -3356,6 +3333,53 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/productos/get_highest_product_number": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener el numero mas grande o de producto.number",
+        "operationId": "get_highest_product_number_productos_get_highest_product_number_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "title": "Response Get Highest Product Number Productos Get Highest Product Number Get"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Categoría/ingredientes no encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3991,6 +4015,24 @@
               "default": 200,
               "title": "Limit"
             }
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "2026-11-25T21:01:18.239704+01:00",
+              "title": "Datetime"
+            }
           }
         ],
         "responses": {
@@ -4004,6 +4046,76 @@
                     "$ref": "#/components/schemas/ReservationSchema"
                   },
                   "title": "Response List My Reservations Reservas Me Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservas/me/history": {
+      "get": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Listar el historial de reservas ya transcurridas. (customer)",
+        "operationId": "list_my_history_reservas_me_history_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 200,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "2026-11-25T21:01:18.241739+01:00",
+              "title": "Datetime"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReservationSchema"
+                  },
+                  "title": "Response List My History Reservas Me History Get"
                 }
               }
             }
@@ -5914,6 +6026,11 @@
             ],
             "title": "Day Of Week"
           },
+          "is_morning_close": {
+            "type": "boolean",
+            "title": "Is Morning Close",
+            "default": false
+          },
           "morning_open_time": {
             "anyOf": [
               {
@@ -5935,6 +6052,11 @@
               }
             ],
             "title": "Morning Close Time"
+          },
+          "is_afternoon_close": {
+            "type": "boolean",
+            "title": "Is Afternoon Close",
+            "default": false
           },
           "afternoon_open_time": {
             "anyOf": [
@@ -6591,7 +6713,14 @@
             "title": "Id"
           },
           "number": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Number"
           },
           "name": {
@@ -6669,7 +6798,6 @@
         },
         "type": "object",
         "required": [
-          "number",
           "name",
           "price",
           "category_id"

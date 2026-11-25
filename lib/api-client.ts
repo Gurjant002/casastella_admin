@@ -171,6 +171,15 @@ export async function updateProduct(
   });
 }
 
+export async function getHighestNumberPlate(
+  token: string
+): Promise<number> {
+  return request('/productos/get_highest_product_number', {
+    method: 'GET',
+    token,
+  })
+}
+
 // Category endpoints
 export async function getCategories(
   token: string,

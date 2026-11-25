@@ -9,6 +9,7 @@ import {
   getCategories,
   ProductCreateSchema,
   CategoryModel,
+  getHighestNumberPlate,
 } from '@/lib/api-client';
 import { FormInput, FormSelect, FormCheckbox, FormTextarea } from '@/features/admin/ui/form-components';
 import { FormButton, FormButtonGroup } from '@/features/admin/ui/button-components';
@@ -35,7 +36,15 @@ export default function NuevoPlatoPage() {
 
   useEffect(() => {
     loadCategories();
+    loadLastNumber()
+    
   }, [token]);
+
+  const loadLastNumber = async () => {
+    if (!token) return;
+    const number = await getHighestNumberPlate(token)
+    setFormData({...formData, number: (number+1)})
+  }
 
   const loadCategories = async () => {
     if (!token) return;

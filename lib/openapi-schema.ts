@@ -728,26 +728,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/productos/seed-casa-stella": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Importar carta Casa Stella desde JSON (admin)
-         * @description Lanza un job en segundo plano para importar `menu_casa_stella/menu_casa_stella.json` (categorías, productos y alérgenos). Es fire-and-forget.
-         */
-        post: operations["seed_casa_stella_menu_productos_seed_casa_stella_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/productos": {
         parameters: {
             query?: never;
@@ -862,6 +842,23 @@ export interface paths {
          * @description Crea un producto (y opcionalmente links a ingredientes). Requiere bearer token con `role=admin`.
          */
         post: operations["create_product_productos_create_product_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/productos/get_highest_product_number": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtener el numero mas grande o de producto.number */
+        get: operations["get_highest_product_number_productos_get_highest_product_number_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1015,6 +1012,23 @@ export interface paths {
         };
         /** Listar mis reservas (customer) */
         get: operations["list_my_reservations_reservas_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reservas/me/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar el historial de reservas ya transcurridas. (customer) */
+        get: operations["list_my_history_reservas_me_history_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1699,10 +1713,20 @@ export interface components {
             id?: number | null;
             /** Day Of Week */
             day_of_week: string | null;
+            /**
+             * Is Morning Close
+             * @default false
+             */
+            is_morning_close: boolean;
             /** Morning Open Time */
             morning_open_time?: string | null;
             /** Morning Close Time */
             morning_close_time?: string | null;
+            /**
+             * Is Afternoon Close
+             * @default false
+             */
+            is_afternoon_close: boolean;
             /** Afternoon Open Time */
             afternoon_open_time?: string | null;
             /** Afternoon Close Time */
@@ -2021,7 +2045,7 @@ export interface components {
             /** Id */
             id?: number | null;
             /** Number */
-            number: number;
+            number?: number | null;
             /** Name */
             name: string;
             /** Description */
@@ -4403,35 +4427,6 @@ export interface operations {
             };
         };
     };
-    seed_casa_stella_menu_productos_seed_casa_stella_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponse"];
-                };
-            };
-            /** @description Error interno */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     get_all_products_productos_get: {
         parameters: {
             query?: never;
@@ -4470,6 +4465,7 @@ export interface operations {
                 category_id?: number;
                 category_common_name?: string;
                 available?: boolean;
+                refresh_cache?: unknown;
             };
             header?: never;
             path?: never;
@@ -4722,6 +4718,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Error interno */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_highest_product_number_productos_get_highest_product_number_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": number;
+                };
+            };
+            /** @description Categoría/ingredientes no encontrados */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Error interno */
@@ -5152,6 +5186,39 @@ export interface operations {
         parameters: {
             query?: {
                 limit?: number;
+                datetime?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReservationSchema"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_my_history_reservas_me_history_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                datetime?: string | null;
             };
             header?: never;
             path?: never;
